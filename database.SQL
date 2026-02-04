@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 20, 2023 at 06:49 PM
+-- Generation Time: Feb 04, 2026 at 05:25 PM
 -- Server version: 5.1.73-community
--- PHP Version: 7.1.29
+-- PHP Version: 7.4.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -195,6 +195,18 @@ CREATE TABLE `curricularunits` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `curricularunit_has_reviewers`
+--
+
+CREATE TABLE `curricularunit_has_reviewers` (
+  `curricularunit_has_reviewers_id` int(11) NOT NULL,
+  `curricularunits_id` int(11) NOT NULL,
+  `users_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `exams`
 --
 
@@ -231,7 +243,8 @@ CREATE TABLE `exams_questions_total` (
 
 CREATE TABLE `exam_has_questions` (
   `exams_id` int(16) NOT NULL,
-  `questions_id` int(16) NOT NULL
+  `questions_id` int(16) NOT NULL,
+  `marks` int(2) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -323,7 +336,6 @@ CREATE TABLE `questions` (
   `curricularsections_id` int(16) DEFAULT NULL,
   `questiontypes_id` int(11) DEFAULT NULL,
   `content` mediumtext NOT NULL,
-  `source` varchar(45) DEFAULT 'IAVE' COMMENT 'question source',
   `complexities_id` int(16) DEFAULT NULL,
   `resolution_time` int(16) DEFAULT NULL COMMENT 'minutes',
   `correct_answer` mediumtext,
@@ -332,7 +344,8 @@ CREATE TABLE `questions` (
   `users_id` int(16) DEFAULT NULL,
   `title` varchar(80) DEFAULT NULL,
   `questionmodes_id` int(11) DEFAULT NULL,
-  `validated` tinyint(1) DEFAULT '0'
+  `validated` tinyint(1) DEFAULT '0',
+  `sources_id` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -388,6 +401,36 @@ CREATE TABLE `question_has_questiontypes` (
 CREATE TABLE `question_has_userprofiles` (
   `questions_id` int(16) NOT NULL,
   `userprofiles_id` varchar(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reset_password_request`
+--
+
+CREATE TABLE `reset_password_request` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `selector` varchar(20) NOT NULL,
+  `hashed_token` varchar(100) NOT NULL,
+  `requested_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `expires_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sources`
+--
+
+CREATE TABLE `sources` (
+  `sources_id` int(11) NOT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  `href` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `users_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -614,6 +657,14 @@ ALTER TABLE `curricularunits`
   ADD KEY `fk_curicularunits_languages` (`languages_id`) USING BTREE;
 
 --
+-- Indexes for table `curricularunit_has_reviewers`
+--
+ALTER TABLE `curricularunit_has_reviewers`
+  ADD PRIMARY KEY (`curricularunit_has_reviewers_id`),
+  ADD KEY `curricularunits_id` (`curricularunits_id`),
+  ADD KEY `users_id` (`users_id`);
+
+--
 -- Indexes for table `exams`
 --
 ALTER TABLE `exams`
@@ -680,7 +731,8 @@ ALTER TABLE `questions`
   ADD KEY `fk_complexities_id` (`complexities_id`),
   ADD KEY `fk_questiontypes_id` (`questiontypes_id`),
   ADD KEY `fk_users_id` (`users_id`),
-  ADD KEY `questionmodes_id` (`questionmodes_id`);
+  ADD KEY `questionmodes_id` (`questionmodes_id`),
+  ADD KEY `fk_sources_id` (`sources_id`);
 
 --
 -- Indexes for table `questiontypes`
@@ -716,6 +768,21 @@ ALTER TABLE `question_has_questiontypes`
 ALTER TABLE `question_has_userprofiles`
   ADD KEY `fk_questions_userprofiles` (`questions_id`),
   ADD KEY `fk_userprofiles2` (`userprofiles_id`);
+
+--
+-- Indexes for table `reset_password_request`
+--
+ALTER TABLE `reset_password_request`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `sources`
+--
+ALTER TABLE `sources`
+  ADD PRIMARY KEY (`sources_id`),
+  ADD UNIQUE KEY `description` (`description`),
+  ADD KEY `users_id` (`users_id`);
 
 --
 -- Indexes for table `usermadeexams`
@@ -832,6 +899,12 @@ ALTER TABLE `curricularunits`
   MODIFY `curricularunits_id` int(16) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `curricularunit_has_reviewers`
+--
+ALTER TABLE `curricularunit_has_reviewers`
+  MODIFY `curricularunit_has_reviewers_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `exams`
 --
 ALTER TABLE `exams`
@@ -880,6 +953,18 @@ ALTER TABLE `questiontypes`
   MODIFY `questiontypes_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `reset_password_request`
+--
+ALTER TABLE `reset_password_request`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sources`
+--
+ALTER TABLE `sources`
+  MODIFY `sources_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `usermadeexams`
 --
 ALTER TABLE `usermadeexams`
@@ -911,7 +996,7 @@ ALTER TABLE `user_has_curricularunits`
 -- Constraints for table `accesslogs`
 --
 ALTER TABLE `accesslogs`
-  ADD CONSTRAINT `fk_accesslogs_users` FOREIGN KEY (`users_id`) REFERENCES `users_org` (`users_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `accesslogs_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`users_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `answerstoquestions`
@@ -982,6 +1067,13 @@ ALTER TABLE `curricularunits`
   ADD CONSTRAINT `fk_curricularunits_users` FOREIGN KEY (`users_id`) REFERENCES `users` (`users_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
+-- Constraints for table `curricularunit_has_reviewers`
+--
+ALTER TABLE `curricularunit_has_reviewers`
+  ADD CONSTRAINT `reviewers_ibfk_1` FOREIGN KEY (`curricularunits_id`) REFERENCES `curricularunits` (`curricularunits_id`),
+  ADD CONSTRAINT `reviewers_ibfk_2` FOREIGN KEY (`users_id`) REFERENCES `users` (`users_id`);
+
+--
 -- Constraints for table `exams`
 --
 ALTER TABLE `exams`
@@ -1012,6 +1104,7 @@ ALTER TABLE `questions`
   ADD CONSTRAINT `fk_curricularunits_id` FOREIGN KEY (`curricularunits_id`) REFERENCES `curricularunits` (`curricularunits_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_languages_id` FOREIGN KEY (`languages_id`) REFERENCES `languages` (`languages_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_questiontypes_id` FOREIGN KEY (`questiontypes_id`) REFERENCES `questiontypes` (`questiontypes_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_sources_id` FOREIGN KEY (`sources_id`) REFERENCES `sources` (`sources_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_users_id` FOREIGN KEY (`users_id`) REFERENCES `users` (`users_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`questionmodes_id`) REFERENCES `questionmodes` (`questionmodes_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -1042,6 +1135,18 @@ ALTER TABLE `question_has_questiontypes`
 ALTER TABLE `question_has_userprofiles`
   ADD CONSTRAINT `fk_questions_userprofiles` FOREIGN KEY (`questions_id`) REFERENCES `questions` (`questions_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_userprofiles2` FOREIGN KEY (`userprofiles_id`) REFERENCES `userprofiles` (`userprofiles_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `reset_password_request`
+--
+ALTER TABLE `reset_password_request`
+  ADD CONSTRAINT `reset_password_request_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`users_id`);
+
+--
+-- Constraints for table `sources`
+--
+ALTER TABLE `sources`
+  ADD CONSTRAINT `sources_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`users_id`);
 
 --
 -- Constraints for table `usermadeexams`
