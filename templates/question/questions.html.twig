@@ -1,0 +1,237 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Questions{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/pagination.css">
+<style>
+	.float{
+		position:fixed;
+		bottom:80px;
+		right:40px;
+	}
+</style>
+
+
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+
+		
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+					<p style="text-align:right"><small>{{'You are logged in as' | trans}} {{app.user.name}}
+					{% if is_granted('ROLE_ADMIN') %}
+					&nbsp(Administrator)
+					{% endif %}
+					</small></p>
+				{% endif %}				
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+                                    {%if id %}
+									<li>
+                                        <form class="form-inline" method="get" action="{{path('filter', {'id': id})}}">
+                                            <select id="chapter-dropdown" name="chapter" class="form-control" style="width: 15em;">
+                                                <option selected="true" disabled>{{'Chapter' | trans}}</option>
+                                                {%for c in curricularchapters %}
+											    <option value="{{c.curricularchapters_id}}">{{c.description}}</option>
+										        {% endfor %}                                                                                   
+                                            </select> &nbsp;
+                                            <select id="section-dropdown" name="section" class="form-control" style="width: 15em;">
+                                                <option selected="true" disabled>{{'Section' | trans}}</option>                                                                           
+                                            </select>  &nbsp;
+                                            <select name="complexity" class="form-control" style="width: 10em;">
+                                                <option selected="true" disabled>{{'Difficulty' | trans}}</option> 
+                                                {%for c in complexities %}
+											    <option value="{{c.complexities_id}}">{{c.description | trans }}</option>
+										        {% endfor %}                                                                                                                            
+                                            </select> &nbsp;&nbsp;
+                                            <input type="submit" class="btn btn-outline-info" value="{{'Filter' | trans | upper}}">
+                                        </form> 
+                                    </li>
+									{% endif %} 								
+									<li><a class="nav-link" href="{{path('menu')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link"  href="{{path('question', {'type': 4}) }}">{{'New Item' | trans}}</a></li>								
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+
+	<div class="contact_content">
+	
+		<div class="container">
+				<br>
+				<br>
+				<br>
+				<div class="row">
+						{% for message in app.flashes('notice') %}
+							<div class="alert alert-warning" style="text-align:center">
+							{{ message | trans }}
+							</div>
+						{% endfor %}
+				</div>
+		
+			{%for q in questions %}
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+						<p><strong>#{{q.id}}</strong></p>
+						<p><strong>{{'Title' | trans}}:</strong> {{q.title}}</p>						
+						<p><strong>{{'Curricular Unit' | trans}}:</strong> {{q.uname}}</p>
+						<p><strong>{{'Chapter' | trans}}:</strong> {{q.cdescription}}</p>
+						<p><strong>{{'Section' | trans}}:</strong> {{q.sdescription}}</p>
+						<p><strong>{{'Difficulty' | trans}}:</strong> {{q.ctydescription | trans}}</p>
+						<p><strong>{{'Source' | trans}}:</strong> <a target="_blank" href="{{q.srchref}}">{{q.srcdescription}}</a></p>						
+						<p>
+						{% if (is_granted('ROLE_ADMIN') or (q.users_id==users_id) or reviewer) %}
+							<a href="{{ path('del_question', {'id': q.id}) }}" data-confirm="{{'Are you sure you want to delete this question' | trans}}?" class="btn btn-outline-warning btn-lg" >{{'Delete' | trans}}</a>					
+							{% if q.type == 5 %}
+							<span class="float-right"><a href="{{ path('edit_question', {'id': q.id}) }}" class="btn btn-outline-info btn-lg" >{{'Edit' | trans}}</a></span>
+							{% endif %}
+							{% if q.type == 4 %}
+							<span class="float-right"><a href="{{ path('edit_question2', {'id': q.id}) }}" class="btn btn-outline-info btn-lg" >{{'Edit' | trans}}</a></span>
+							{% endif %}
+						{% endif %}	
+						</p>					
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-9">
+						{% if q.type == 6 %}
+							<img class="img-responsive" src="{{asset('uploads/questions')}}/{{q.content}}" alt="">
+						{% endif %}
+						{% if q.type == 5 %}
+							{% autoescape false %}{{q.content}}{% endautoescape %}
+						{% endif %}
+						{% if q.type == 4 %}
+							{% autoescape false %}{{q.content}}{% endautoescape %}
+						{% endif %}
+					</div>				
+				</div>
+				<hr />
+			{% endfor %}
+			
+			{% if questions is empty %}
+					<br><br><br>
+					<p style="text-align:center;"> {{'The items database is empty. Please insert a new item.' | trans }} </p>
+					<br><br><br>
+			{% endif %}		
+
+			
+			<!-- Pagination -->
+			<div class="row row-xl-eq-height">
+				<div class="col-xl-3">
+				</div>
+				<div class="col-xl-9">			
+					<div class="pagination_container">
+						<div class="pagination p9">
+							<ul>
+								{%if  pagination[0] is not empty %}
+									<a href="{{path('questions', {'id': id})}}?page={{pagination[0].href}}"><li><i class="fa fa-angle-left"></i></li></a>
+								{% endif %}		
+								{%for p in pagination[1] %}
+									{%if  p.page != '...' %}
+										<a class="{{p.class}}" href="{{path('questions', {'id': id})}}?page={{p.href}}"><li>{{p.page}}</li></a>
+									{% else %}
+										<a><li>{{p.page}}</li></a>
+									{% endif %}	
+								{% endfor %}
+								{%if  pagination[2] is not empty %}
+									<a href="{{path('questions', {'id': id})}}?page={{pagination[2].href}}"><li><i class="fa fa-angle-right"></i></li></a>
+								{% endif %}												        
+							</ul>							
+						</div>
+					</div>				
+				</div>		
+			</div>
+			
+			<a href="{{path('menu')}}" class="btn btn-outline-warning btn-lg float" style="float:right;">{{'Close' | trans}}</a>
+
+			{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+				<p><small>{{'You are logged in as' | trans}} {{ app.user.name }}
+				{% if is_granted('ROLE_ADMIN') %}
+					&nbsp(Administrator)
+				{% endif %}											
+				</small></p>
+			{% endif %}	
+
+		</div>
+				
+	</div>
+
+
+</div>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script>
+$(document).on('click', ':not(form)[data-confirm]', function(e){
+    if(!confirm($(this).data('confirm'))){
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    }
+});
+
+$('#chapter-dropdown').change(function() {
+
+    var selection = $( "#chapter-dropdown" ).val();
+    var dropdown = $('#section-dropdown');
+
+    dropdown.empty();
+
+    dropdown.append('<option selected="true" disabled>{{"Section" | trans}}</option>');
+    dropdown.prop('selectedIndex', 0);
+
+    const url = '{{path('curricularsections')}}/' + selection;
+
+    // Populate dropdown with list
+        $.getJSON(url, function (data) {
+        $.each(data, function (key, entry) {
+        dropdown.append($('<option></option>').attr('value', entry.curricularsections_id).text(entry.description));
+        })
+    });
+
+});
+</script>
+{% endblock %}
+
+
+
+									
+
+
+
+
+

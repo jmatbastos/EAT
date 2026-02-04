@@ -1,0 +1,310 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New exam{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('elearn')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="{{path('exams', {'id': curricularunits_id})}}">{{'Exams' | trans}}</a></li>							
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact" >
+	
+		<div class="container">
+			<div class="row row-xl-eq-height">
+				{% if type == 1 %}
+					<div class="col-xl-3">
+				{% else %}
+					<div class="col-xl-1">
+				{% endif %}	
+				</div>					
+				<!-- Contact Content -->
+				{% if type == 1 %}
+					<div class="col-xl-6">
+				{% else %}
+					<div class="col-xl-10">
+				{% endif %}
+					<div class="contact_content">
+						<div class="contact_form_container">
+					{% if errors > 0 %}
+					   <h2>{{'Validation failed' | trans}}</h2>
+					   <ul>
+					   {% for field, errorMessage in errorMessages %}
+						   <li>{{ errorMessage | trans }}</li>
+					   {% endfor %}
+					   </ul>
+					   <br>
+					{% endif %}						
+							<form method="post">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token('exam') }}">
+								
+								<div class="form-group">
+									<label>{{'Curricular Unit' | trans}}</label>
+									{% if curricularunits_id is empty %}
+										<select class="form-control" id="curricularunit" name="curricularunit" >
+											<option selected="true" disabled>Choose the Curricular Unit</option>
+											{%for c in curricularunits %}
+												<option value="{{c.curricularunits_id}}">{{c.name}}</option>
+											{% endfor %}
+										</select>
+									{% else %}
+										<select class="form-control" id="curricularunit" name="curricularunit" >
+											{%for c in curricularunits %}
+												{% if c.curricularunits_id==curricularunits_id %}
+													<option value="{{c.curricularunits_id}}">{{c.name}}</option>												
+												{% endif %}
+											{% endfor %}
+										</select>									
+									{% endif %}
+								</div>
+								<br>
+								
+								{% if type == 1 %}
+								
+
+								<div id="info-dropdown"></div>
+								<div id="chapter-dropdown"></div>
+								
+								{% endif %}
+								
+								{% if type == 2 %}
+								
+
+								<div id="info-dropdown"></div>								
+								<div id="form-dropdown" style="visibility: hidden;">	
+																	
+									<div class="form-group">
+										<label>{{'Exam name' | trans}}</label>
+										<input class="form-control" type="text" size="40" name="name">	
+									</div>
+									
+									<div class="form-group">
+										<label>{{'Exam length' | trans}}</label>
+										<input class="form-control" type="number" size="10" min="30" max="180"  placeholder="{{'in minutes' | trans}}" name="length">	
+									</div>
+									
+									
+									<div class="form-group">
+										<label>{{'Exam Introduction' | trans}}</label>
+										<textarea id="summernote" name="content"></textarea>	
+									</div>
+									<br>								
+								
+								</div>
+								
+								{% endif %}
+								
+								<br>
+								
+								
+								
+
+								<a href="{{path('exams', {'id': curricularunits_id})}}" class="btn btn-outline-warning btn-lg" >{{'Cancel' | trans}}</a>
+														
+								
+								<input style="visibility: hidden;" type="submit" class="contact_button float-right" value="{{'Next' | trans}}">
+
+							
+							</form>
+						</div>
+
+					</div>
+				</div>
+				{% if type == 1 %}
+					<div class="col-xl-3">
+				{% else %}
+					<div class="col-xl-1">
+				{% endif %}	
+				</div>
+				</div>	
+			</div>
+		</div>				
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+
+{% if type == 1 %}
+<script>
+
+function handler() {
+
+		var selection = $( "#curricularunit" ).val(); 
+		var dropdown = $('#chapter-dropdown');
+		var info = $('#info-dropdown');
+
+		dropdown.empty();
+		info.empty();
+		
+
+		var url = '{{path('total_questionsByCurricularunits')}}/' + selection;
+
+		// get total number of questions
+			$.getJSON(url, function (data) {
+			if (data.length == 0) {
+				info.append('{{"This Curricular Unit does not have questions yet" | trans}}');
+				$("input.contact_button").css("visibility", "hidden");	
+			}		
+			else {
+				info.append('{{"Total number of questions available in this Curricular Unit" | trans}}: ' + data[0].questions_total  + '<br>');
+				
+				var url = '{{path('total_questionsByCurricularchapters')}}/' + selection;
+				// get total number of questions
+					$.getJSON(url, function (data) {
+					info.append('<ul>')
+					$.each(data, function (key, entry) {
+					info.append('<li>' +entry.description  + ': '+ entry.questions_total  + '</li>');
+					})
+					info.append('</ul>')
+				});	
+
+				dropdown.append('<br><p>{{"Choose the number of questions of each chapter" | trans}}</p> <br>');
+
+				var url = '{{path('curricularchapters')}}/' + selection;
+
+				// Populate dropdown with list
+					$.getJSON(url, function (data) {
+					$.each(data, function (key, entry) {
+					dropdown.append('<div class="form-group"> <div class="form-control"><label>' + entry.description + ':</label>  <input type="number" min="0" max="10" value="5" name="' +  entry.curricularchapters_id + '"> </div> </div>')
+				})
+				});
+			
+				$("input.contact_button").css("visibility", "visible");
+			}
+
+		});
+
+
+
+	
+	}
+
+    $('#curricularunit').change(handler);
+	
+	if ( $('#curricularunit').val() ) handler()
+	
+
+
+</script>
+
+{% endif %}
+
+{% if type == 2 %}
+
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<script>
+		function handler() {
+			
+			var selection = $( "#curricularunit" ).val(); 		
+			var url = '{{path('total_questionsByCurricularunits')}}/' + selection;
+
+			// get total number of questions
+			$.getJSON(url, function (data) {
+				if (data.length == 0) {
+					$('#info-dropdown').empty();
+					$('#info-dropdown').append('{{"This Curricular Unit does not have questions yet" | trans}}');
+					$('#info-dropdown').append('<a href="{{path('exams', {'id': curricularunits_id})}}" class="btn btn-outline-warning btn-lg float-right" >{{'Cancel' | trans}}</a>')
+					$('#form-dropdown').css("visibility", "hidden");
+					$("input.contact_button").css("visibility", "hidden");
+				}		
+				else {
+					$('#info-dropdown').empty();
+					$("input.contact_button").css("visibility", "visible");	
+					$('#form-dropdown').css("visibility", "visible");				
+				}
+			})		
+		}
+
+		$('#curricularunit').change(handler);	
+		if ( $('#curricularunit').val() ) handler();
+</script>
+
+
+
+<script>
+$(document).ready(function() {
+	$('#summernote').summernote({
+		  fontNames: ['Arial', 'Arial Black', 'Courier New', 'Times New Roman', 'Verdana', 'Helvetica'],
+		  height: 300,                 // set editor height
+		  minHeight: null,             // set minimum height of editor
+		  maxHeight: null,             // set maximum height of editor
+		  focus: true,		  
+		  toolbar: [
+		  ['style', ['style']],
+		  ['font', ['bold', 'underline', 'italic', 'superscript', 'subscript', 'clear']],
+		  ['fontname', ['fontname']],
+		  ['color', ['color']],
+		  ['para', ['ul', 'ol', 'paragraph']],
+		  ['table', ['table']],
+		  ['insert', ['link', 'picture']],
+		  ['view', ['codeview', 'help']],
+		],
+		popover: {
+		  image: [
+			['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+			['float', ['floatLeft', 'floatRight', 'floatNone']],
+			['remove', ['removeMedia']]
+		  ],
+		  link: [
+			['link', ['linkDialogShow', 'unlink']]
+		  ],
+		  table: [
+			['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+			['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+		  ]
+		}
+
+	});
+	
+    $('#summernote').summernote('fontName', 'Helvetica');
+
+});
+</script>
+{% endif %}
+
+{% endblock %}
+
+
+

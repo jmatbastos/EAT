@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistics{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+<style>
+h2:hover, h3:hover {
+color: red;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+				<p style="text-align:right"><small>{{'You are logged in as' | trans}} {{app.user.name}}
+				{% if is_granted('ROLE_ADMIN') %}
+					&nbsp(Administrator)
+				{% endif %}					
+				</small></p>
+				{% endif %}
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('elearn')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="#">{{'Statistics' | trans}}</a></li>										
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact_content">
+	
+		<div class="container">
+		
+		
+		
+			<div class="row row-xl-eq-height">		
+
+				<div class="col-xl-12" style="text-align: center;">
+					<br>
+					<br>
+					<br>
+						<h2 style="text-transform: uppercase;">{{'Items' | trans}}</h2>
+				</div>
+			</div>
+			
+			
+			<br>
+			<br>
+			
+			<div class="row row-xl-eq-height">
+					<div class="col-xl-4">
+						<a><strong>{{'Curricular Unit' | trans}}</strong></a>			
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-4">
+						<a><strong>{{'Chapter' | trans}}</strong></a>	
+					</div>	
+					<div class="col-xl-4">
+						<a href="" id="showBySection" data-toggle="tooltip" title="Click to toggle visibility!"><strong>{{'Section' | trans}}</strong></a>	
+					</div>						
+			</div>
+			
+			
+			<hr/>
+			
+			{%for c in curricularunits1 %}
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+						<p><strong>{{c.curricularunit_name}}</strong></p>			
+					</div>
+					<div class="col-xl-1">	
+						<p>{{c.questions_total}}</p>
+					</div>
+					
+
+					<div class="col-xl-4">
+						{% for chpt in c.chapters %}
+						<p><strong>{{chpt.chapter_description}}</strong><span style="float:right;">{{chpt.questions_total}}</span></p>
+						{% endfor %}
+					</div>					
+
+					<div class="col-xl-4"  >
+						<div class="toggle" style="display: none;">
+							{% for s in c.sections %}
+							<p><strong>{{s.section_description}}</strong><span style="float:right;">{{s.questions_total}}</span></p>
+							{% endfor %}
+						</div>
+					</div>					
+
+				</div>
+				<hr/>
+			{% endfor %}
+
+			<div class="row row-xl-eq-height">		
+
+				<div class="col-xl-12" style="text-align: center;">
+					<br>
+					<br>
+					<br>
+						<h2 style="text-transform: uppercase;">{{'Exams' | trans}}</h2>
+				</div>
+			</div>
+			
+			
+			<br>
+			<br>
+			
+			<div class="row row-xl-eq-height">
+					<div class="col-xl-4">
+						<p><strong>{{'Curricular Unit' | trans}}</strong></p>			
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-4">
+						<p><strong>{{'Name' | trans}}<span style="float:right;">{{'Attempts' | trans}}</span></strong></p>	
+					</div>	
+					<div class="col-xl-4">
+					
+					</div>						
+			</div>
+			
+			
+			<hr/>
+			
+			{%for c in curricularunits2 %}
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+						<p><strong>{{c.name}}</strong></p>			
+					</div>
+					<div class="col-xl-1">	
+						<p>{{c.exams_total}}</p>
+					</div>
+					
+
+					<div class="col-xl-4">
+						{% for ex in c.exams %}
+						<p><strong>{{ex.exams_name}}</strong><span style="float:right;">{{ex.attempts_total}}</span></p>
+						{% endfor %}
+					</div>					
+
+					
+					<div class="col-xl-4">
+
+					</div>					
+
+				</div>
+				<hr/>
+			{% endfor %}			
+			
+			
+			
+			
+			<a href="{{path('menu')}}" class="btn btn-outline-warning btn-lg" style="float:right;">{{'Close' | trans}}</a>
+			{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+				<p><small>{{'You are logged in as' | trans}} {{ app.user.name }}
+				{% if is_granted('ROLE_ADMIN') %}
+					&nbsp(Administrator)
+				{% endif %}											
+				</small></p>
+			{% endif %}			
+				
+		</div>				
+	
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+
+<script>
+	document.getElementById("showBySection").addEventListener('click', function(event){
+		event.preventDefault();
+		$(".toggle").toggle();
+	});
+</script
+
+{% endblock %}
+
+
+
+
+
+
+
+									
+
+
+
+
+

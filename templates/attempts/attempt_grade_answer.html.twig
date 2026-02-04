@@ -1,0 +1,176 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}grade answer{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/bootstrap4/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/main_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Contact -->
+
+	<div class="contact" >
+	
+		<div class="container">
+			<div class="row row-xl-eq-height">
+					
+				<!-- Contact Content -->
+				<div class="col-xl-12">
+					<div class="contact_content">
+
+						
+						
+						   {% if errors > 0 %}
+							   <h2>{{'Validation failed' | trans}}</h2>
+							   <ul>
+							   {% for field, errorMessage in errorMessages %}
+								   <li>{{ errorMessage | trans }}</li>
+							   {% endfor %}
+							   </ul>
+							   <br>
+							{% endif %}
+							
+							<p><strong>{{'Student answer' | trans}}</strong></p>	
+							{% if answer.answertypes_id == "5" %}								
+								{% autoescape false %}{{answer.answer}}{% endautoescape %}
+							{% endif %}
+							
+							{% if answer.answertypes_id == "6" %}					
+								<img src="{{answer.answer}}">
+							{% endif %}
+							
+							<hr>
+							
+							<p><strong>{{'Correct answer' | trans}}</strong></p>
+							{% autoescape false %}{{question.correct_answer}}{% endautoescape %}						
+							
+							<hr>
+							
+
+							
+							<form method="post" onsubmit="return validateForm()">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token('grade') }}">
+								
+								<div class="form-group">
+								    <p><strong>{{'grade' | trans}}</strong></p>
+									<input id="answer" type="text" name="grade" value="{{answer.grade}}" size="1"> / <i id="marks">{{question.marks}}</i>
+								</div>
+								
+								<br>
+														
+								<div class="form-group">
+								    <p><strong>{{'Comments' | trans}}</strong></p>
+									<textarea id="summernote" name="content"></textarea>	
+								</div>
+							
+
+
+								<br>
+								
+								<a id="close" class="btn btn-outline-warning btn-lg" >{{'Cancel' | trans}}</a>
+								&nbsp;								
+								<input type="submit" class="btn btn-outline-primary btn-lg float-right" value="{{'Submit' | trans}}">
+							
+							</form> 
+
+
+					</div>
+				</div>
+
+			</div>
+		</div>				
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/popper.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+	$('#summernote').summernote({
+		  fontNames: ['Arial', 'Arial Black', 'Courier New', 'Times New Roman', 'Verdana', 'Helvetica'],
+		  height: 300,                 // set editor height
+		  minHeight: null,             // set minimum height of editor
+		  maxHeight: null,             // set maximum height of editor
+		  focus: true,		  
+		  toolbar: [
+		  ['style', ['style']],
+		  ['font', ['bold', 'underline', 'italic', 'superscript', 'subscript', 'clear']],
+		  ['fontname', ['fontname']],
+		  ['color', ['color']],
+		  ['para', ['ul', 'ol', 'paragraph']],
+		  ['table', ['table']],
+		  ['insert', ['link', 'picture']],
+		  ['view', ['codeview', 'help']],
+		],
+		popover: {
+		  image: [
+			['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+			['float', ['floatLeft', 'floatRight', 'floatNone']],
+			['remove', ['removeMedia']]
+		  ],
+		  link: [
+			['link', ['linkDialogShow', 'unlink']]
+		  ],
+		  table: [
+			['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+			['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+		  ]
+		}
+
+	});
+	
+    $('#summernote').summernote('fontName', 'Helvetica');
+	
+	var HTMLstring = `{% autoescape false %}{{answer.comments}}{% endautoescape %}`;
+	$('#summernote').summernote('code', HTMLstring);
+
+});
+</script>
+
+<script>
+	$(function () {
+	  $('#close').click(function () {
+		window.close()
+		return false
+	  })
+	})
+</script>
+
+<script>
+	function validateForm() {	
+		if ($("#answer").val() > $("#marks").text()) {
+			alert("{{'grade must be less than or equal to maximum mark' | trans}}");
+			return false;
+		}
+		if ($("#answer").val() < 0) {
+			alert("{{'grade must be equal to or greater than zero' | trans}}");
+			return false;
+		}
+		return true;
+	}
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+

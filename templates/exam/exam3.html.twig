@@ -1,0 +1,273 @@
+ {% extends 'base.html.twig' %}
+
+{% block title %}New Exam{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news_responsive.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+a
+{
+	display: inline;
+	position: relative;
+	color: inherit;
+	border-bottom: solid 1px #ffa07f;
+	-webkit-transition: all 200ms ease;
+	-moz-transition: all 200ms ease;
+	-ms-transition: all 200ms ease;
+	-o-transition: all 200ms ease;
+	transition: all 200ms ease;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_container ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('elearn')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="{{path('exams',  { 'id' : curricularunits_id })}}">{{'Exams' | trans}}</a></li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	
+
+	<!-- News -->
+	<div class="news">
+		<div class="container">
+			<div class="row justify-content-center">
+				<h3>{{'Select questions to add to exam' | trans}}:</h3>
+			</div>
+		  <div class="row">
+			<div class="col">
+			</div>
+			<div class="col">
+				<label>{{'Curricular Chapter' | trans}}</label>
+				<select class="form-control" id="curricularchapter" name="curricularchapter" >
+					{% if curricularsection is not defined  %}
+						<option selected="true" disabled>Choose Curricular Chapter</option>				
+					{% else %}
+						<option disabled>Choose Curricular Chapter</option>	
+					{% endif %}
+					{%for c in curricularchapters %}
+						{% if curricularsection is defined  and c.curricularchapters_id==curricularsection.curricularchapters_id%}
+						<option selected="true" value="{{c.curricularchapters_id}}">{{c.description}}</option>
+						{% else %}
+						<option value="{{c.curricularchapters_id}}">{{c.description}}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+		
+				<br>
+					
+
+				<label>{{'Section Unit' | trans}}</label>
+				<select class="form-control" id="section-dropdown" name="section">
+				{% if curricularsection is defined %}
+						<option disabled>Choose Section Unit</option>	
+						{%for s in curricularsections %}
+							{% if s.curricularsections_id==curricularsection.curricularsections_id%}
+							<option selected="true" value="{{s.curricularchapters_id}}">{{s.description}}</option>
+							{% else %}
+							<option value="{{s.curricularsections_id}}">{{s.description}}</option>
+							{% endif %}
+						{% endfor %}
+				{% endif %}				
+				</select>
+				
+				
+			</div>
+		  </div>
+		  
+		  </br>
+		  
+		  
+		  <div class="row">
+			<div class="col">
+			<h4 style="text-align:center;">{{'Exam' | trans}}</h4>
+			
+			{% if questions_in_exam is defined %}
+			  {%for q in questions_in_exam %}
+				  <p>
+				  <button id="b{{q.id}}" style="visibility:show;" class="btn" onclick="edit({{q.id}})">{{q.marks}}&nbsp;<span data-toggle="tooltip" title="{{'Edit maximum mark' | trans}}" class="fa fa-pencil" aria-hidden="true"></span></button>&nbsp;&nbsp;
+				  <input id="i{{q.id}}" style="display:none;" type="text" size="1" name="marks" value="{{q.marks}}" onkeypress="cancel(event,{{q.id}})" onchange="update({{q.id}})"> &nbsp;&nbsp;
+				  <a class="popper" href="{{path('view_question')}}/{{q.id}}"><span class="fa fa-search" aria-hidden="true"></span>&nbsp;{{q.title}}...&nbsp;</a>
+				  <a href="{{path('del_question_to_exam')}}/{{q.id}}">{{q.id}}&nbsp;<i class="fa fa-arrow-right"></i></a>
+				  
+				  </p>
+	  
+			  {% endfor %}
+			{% endif %}
+			
+			</div>
+			<div style="border-left-style: solid;border-left-color: coral;border-right-color: white;border-top-color: white;border-bottom-color: white;" class="col">
+
+				<h4 style="text-align:center;">{{'Questions' | trans}}</h4>
+
+					<div id="questions">
+					
+						{% if questions_not_in_exam is defined %}
+						  {%for q in questions_not_in_exam %}
+							  <p>
+							  <a href="{{path('add_question_to_exam')}}/{{q.questions_id}}"><i class="fa fa-arrow-left"></i>&nbsp;{{q.questions_id}}</a>
+							  <a class="popper" href="{{path('view_question')}}/{{q.questions_id}}">&nbsp;{{q.title}}...&nbsp; <span class="fa fa-search" aria-hidden="true"></span></a>							  
+							  </p>
+				  
+						  {% endfor %}
+					{% endif %}
+					
+					
+					</div>
+
+				
+
+			</div>
+		  </div>
+	 
+		{% if total_points != NULL %}
+			<a href="{{ path('exams',  { 'id' : curricularunits_id }) }}" class="btn btn-outline-info btn-lg float-right" >{{'Submit' | trans}}</a>
+		{% endif %}
+
+		 </div>	
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+
+<script>
+	
+	$('#curricularchapter').change(function() {
+
+		var selection = $( "#curricularchapter" ).val();
+		var dropdown = $('#section-dropdown');
+
+		dropdown.empty();
+
+		dropdown.append('<option selected="true" disabled>Choose Section Unit</option>');
+		dropdown.prop('selectedIndex', 0);
+
+		const url = '{{path('curricularsections')}}/' + selection;
+
+		// Populate dropdown with list
+			$.getJSON(url, function (data) {
+			$.each(data, function (key, entry) {
+			dropdown.append($('<option></option>').attr('value', entry.curricularsections_id).text(entry.description));
+		  })
+		});
+	
+	});
+	
+		$('#section-dropdown').change(function() {
+
+		var selection = $( "#section-dropdown" ).val();
+		var questions = $('#questions');
+		
+		questions.empty();
+
+		const url = '{{path('curricularquestions')}}/' + selection;
+
+		// Populate dropdown with list
+		$.getJSON(url, function (data) {
+				$.each(data, function (key, entry) {
+				questions.append('<p>');
+				questions.append($('<a></a>').attr('href', '{{path('add_question_to_exam')}}/' + entry.questions_id).html('<i class="fa fa-arrow-left"></i>'));
+				questions.append(' ');
+				questions.append($('<a></a>').attr('target','_blank').attr('href', '{{path('view_question')}}/' + entry.questions_id).html( entry.title + '... '+'<span class="fa fa-search" aria-hidden="true"></span>'));				
+				questions.append('</p>');
+				})
+		});
+	
+	});
+
+
+
+	$(function () {
+	  $('.popper').click(function () {
+		var href = $(this).attr('href')
+		window.open(href, 'popup', 'width=1280,heigth=800,toolbar=no')
+		return false
+	  })
+	})
+
+	function edit(id) { 
+		let last_id = localStorage.getItem('last_id');
+		if (last_id) {
+			let b = document.getElementById('b'+last_id);
+			let i = document.getElementById('i'+last_id);
+			if (b) b.style = 'visibility:show;';
+			if (i) i.style = 'display:none;'; 
+		}
+
+		let i = document.getElementById('i'+id);
+		i.style = 'visibility:show;';
+		let b = document.getElementById('b'+id);
+		b.style = 'display:none;';
+		localStorage.setItem('last_id', id);		   
+	}
+
+	function update(id) { 
+		let b = document.getElementById('b'+id);
+		let i = document.getElementById('i'+id);
+		b.innerHTML=i.value +'&nbsp;<span class="fa fa-pencil" aria-hidden="true"></span>';
+		b.style = 'visibility:show;';
+		i.style = 'display:none;';  
+		$.get('update_question_to_exam/' + id + '/' + i.value);
+	}
+
+	function cancel(event,id) { 
+		let key = event.key;
+		if (key == 'Enter') {
+			let b = document.getElementById('b'+id);
+			let i = document.getElementById('i'+id);
+			b.style = 'visibility:show;';
+			i.style = 'display:none;'; 
+		} 
+	}
+
+	$(document).ready(function(){
+ 		$('[data-toggle="tooltip"]').tooltip();
+	}); 
+</script>
+{% endblock %}
+
+
+
+
+
+									
+
+
+
+
+

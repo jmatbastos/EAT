@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Attempts{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news_responsive.css">
+<style>
+	.float{
+		position:fixed;
+		bottom:80px;
+		right:40px;
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+				<p style="text-align:right"><small>{{'You are logged in as' | trans}} {{app.user.name}}
+				{% if is_granted('ROLE_ADMIN') %}
+					&nbsp(Administrator)
+				{% endif %}					
+				</small></p>
+				{% endif %}			
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('menu')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="#">{{'Attempts' | trans}}</a></li>									
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	
+
+	<!-- News -->
+	<div class="news">
+		<div class="container">
+			
+			{% for a in attempts %}
+			{% if (is_granted('ROLE_ADMIN') or (a.exams_users_id==users_id)) or (a.users_id==users_id)%}			
+			<div class="row">
+
+						<div class="col-lg-8">
+									<div class="news_post_date">
+										<a href="#">{{'Start date' | trans}}: {{a.start_date}}</a>&nbsp;
+										<a href="#">{{'Finish date' | trans}}: {{a.finish_date}}</a>
+									</div>
+									<div class="news_post_title"><a href="{{path('attempt/show', {'id': a.usermadeexams_id}) }}">{{a.exams_name}}</a></div>	
+									<div class="news_post_meta d-flex flex-row align-items-start justify-content-start">
+										<div class="news_post_author">{{'Student' | trans}}: <a href="#">{{a.user}}</a></div>
+									</div>
+						</div>
+
+						<div class="col-lg-4">
+							{% if (is_granted('ROLE_ADMIN') or (a.exams_users_id==users_id)) %}
+								<div class="button button_2"><a onclick="return confirm('{{'Are you sure you want to delete this attempt' | trans}}?')" href="{{ path('attempt/del', {'id' : a.usermadeexams_id}) }}">{{'Delete' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>					
+								<div class="button button_2"><a href="{{path('attempt/grade', {'id': a.usermadeexams_id}) }}">{{'Grade' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+							{% elseif a.users_id==users_id %}
+								<div class="button button_2"><a href="{{path('attempt/grade', {'id': a.usermadeexams_id}) }}">{{'Show' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+							{% endif %}
+						</div>
+			</div>
+			<hr>
+			{% endif %}
+			{% endfor %}
+			
+			{% if attempts is empty %}
+					<br><br><br>
+					<p style="text-align:center;">{{'The attempts database is empty' | trans}}</p>
+					<br><br><br>
+			{% endif %}			
+
+			<a href="{{path('menu')}}" class="btn btn-outline-warning btn-lg float" style="float:right;">{{'Close' | trans}}</a>
+			{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+				<p><small>{{'You are logged in as' | trans}} {{ app.user.name }}
+				{% if is_granted('ROLE_ADMIN') %}
+					&nbsp(Administrator)
+				{% endif %}											
+				</small></p>
+			{% endif %}			
+		 
+		 
+		 </div>	
+	</div>
+
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+									
+
+
+
+
+

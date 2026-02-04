@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news_responsive.css">
+<style>
+	.transform {
+		background-color: orange;
+		animation-name: transform;
+		animation-duration: 2s;
+		animation-iteration-count: 10;
+	}
+	@keyframes transform {
+		from {background-color: orange;}
+		to {background-color: #ff6600;}
+	}
+	.scale{
+  		animation: 2s linear scale 10;
+	}
+
+	@keyframes scale {
+	to {
+		transform: scale(2);
+	}
+	}
+</style>
+<style>
+	.float{
+		position:fixed;
+		bottom:80px;
+		right:40px;
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+	
+
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+				<p style="text-align:right"><small>{{'You are logged in as' | trans}} {{app.user.name}}
+					{% if is_granted('ROLE_ADMIN') %}
+						&nbsp(Administrator)
+					{% endif %}
+				</small></p>
+				{% endif %}
+				<div class="row">	
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('menu')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="{{path('register')}}">{{'New User' | trans}}</a></li>								
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	
+
+	<!-- News -->
+	<div class="news">
+		<div class="container">
+
+			{% for message in app.flashes('notice') %}
+				<div class="alert alert-warning" style="text-align:center">
+				{{ message | trans }}
+				</div>
+			{% endfor %}
+
+		
+			{% for message in app.flashes('success') %}
+				<div class="alert alert-info" style="text-align:center">
+					{{ message | trans }}
+				</div>
+			{% endfor %}
+			
+			{%for u in users %}
+			<div class="row">
+
+						<div class="col-lg-8">
+									<div class="news_post_date"><a href="#">{{'Registration Date' | trans}}: {{u.created_at}}</a></div>
+									<div class="news_post_title"><a href="#">{{u.name}}</a></div>	
+									<div class="news_post_meta d-flex flex-row align-items-start justify-content-start">
+										{% if is_granted('ROLE_TEACHER')  %}
+										<div class="news_post_author">Email: <a href="#">{{u.email}}</a></div>
+										{% endif %}	
+									</div>
+						</div>
+
+						<div class="col-lg-4">
+						{% if is_granted('ROLE_TEACHER')  %}
+							<div class="button button_2"><a data-confirm="{{'Are you sure you want to delete this user' | trans}}?" href="{{path('user_delete', {'users_id': u.users_id}) }}">{{'Delete' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>												
+			   			{% endif %}							
+							<div class="button button_2 transform"><a onclick="openWindow('{{path('user_enroll', {'users_id': u.users_id}) }}');" >{{'enroll' | trans}}<div class="button_arrow"><i class="fa fa-angle-right scale" aria-hidden="true"></i></div></a></div>				
+						</div>
+			</div>
+			<hr>
+			{% endfor %}
+
+			<a href="{{path('menu')}}" class="btn btn-outline-warning btn-lg float" style="float:right;">{{'Close' | trans}}</a>			
+
+				{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+					<p><small>{{'You are logged in as' | trans}} {{ app.user.name }}</small></p>
+			   {% endif %}
+		 </div>	
+
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+
+<script language='Javascript'>
+<!--
+  // Function to open new window containing window_src
+  function openWindow(window_src)
+  {		
+	window.open(window_src,'_blank',`height=${screen.height},width=${screen.width}`);
+  }
+-->
+</script>
+
+<script>
+$(document).on('click', ':not(form)[data-confirm]', function(e){
+    if(!confirm($(this).data('confirm'))){
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    }
+});
+</script>
+
+{% endblock %}
+
+
+
+
+
+									
+
+
+
+
+

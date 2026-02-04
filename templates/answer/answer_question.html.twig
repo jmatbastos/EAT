@@ -1,0 +1,213 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Answer question{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/bootstrap4/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/main_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Contact -->
+
+	<div class="contact_content">
+	
+		<div class="container">
+
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+						<p><strong>{{'Question' | trans}} {{q.id}}</strong></p>
+						<p><strong>{{'Points' | trans}}:</strong> {{q.marks}}</p>					
+						<br>
+							
+						<table border="1" style="width:150px;" cellspacing="0" cellpadding="0">
+							<tr>
+								<th align="center" width="100%" >
+								<span>&nbsp;&nbsp;&nbsp;{{'Time Remaining' | trans}}</span></th>
+							</tr>
+							<tr>
+								<td align="center" width="100%">
+								<span id="time" ></span>
+								</td>
+							</tr>
+						</table>
+					
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-9">
+						{% if q.type == 6 %}
+							<img class="img-responsive" src="{{asset('uploads/questions')}}/{{q.content}}" alt="">
+						{% endif %}
+						{% if q.type == 5 %}
+							{% autoescape false %}{{q.content}}{% endautoescape %}
+						{% endif %}
+						{% if q.type == 4 %}
+							{% autoescape false %}{{q.content}}{% endautoescape %}
+						{% endif %}
+						
+						<hr>
+						
+						{% if errors > 0 %}
+						   <h2>{{'Validation failed' | trans}}</h2>
+						   <ul>
+						   {% for field, errorMessage in errorMessages %}
+							   <li>{{ errorMessage | trans }}</li>
+						   {% endfor %}
+						   </ul>
+						   <br>
+						{% endif %}
+						
+						<br>
+						
+						<form id="myForm" method="post">			
+							<input type="hidden" name="csrf_token" value="{{ csrf_token('answer') }}">
+							<input type="hidden" id="timer_input" name="timer">
+							
+							<div class="form-group">
+								<label for="imageUpload">{{'Answer' | trans}}:</label>
+								<textarea id="summernote" name="content"></textarea>	
+							</div>
+						 
+							<br>
+
+						   <div>
+								<p style="float:right">{{'Before uploading, check out the' | trans}} <a href="#" onmouseover="popUP()">{{'Image upload restrictions' | trans}}</a>.</p>
+						   </div>
+
+							<br>
+													
+							
+							{% if show_back is defined %}
+								<button type="submit" class="btn btn-primary" name="paginate_button" value="Back">{{'Back' | trans}}</button>
+							{% endif %}
+							{% if show_next is defined %}
+								<button type="submit" class="btn btn-primary" name="paginate_button" value="Next">{{'Next' | trans}}</button>
+							{% else %}	
+								<button type="submit" data-confirm="{{'Are you sure you want to finish the exam' | trans}}?" class="btn btn-danger" name="paginate_button" value="Submit">{{'Submit' | trans}}</button>
+						    {% endif %}
+						</form>	
+					
+					</div>		
+				</div>
+				<hr/>
+
+		</div>				
+	
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/popper.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="{{ asset('js') }}/CountDownTimer.js"></script>
+
+<script>
+
+window.onload = function() {
+	  var display = document.querySelector('#time'),
+		timer_input = document.querySelector('#timer_input'),
+		timer = new CountDownTimer( {{timer}} ),
+		timeObj = CountDownTimer.parse( timer );
+
+
+
+	  format(timeObj.minutes, timeObj.seconds);
+	  timer.onTick(format);
+
+	  timer.start();
+
+
+	  function format(minutes, seconds) {
+		//minutes = minutes < 10 ? "0" + minutes : minutes;
+		//seconds = seconds < 10 ? "0" + seconds : seconds;
+		display.textContent = minutes;
+		timer_input.value = minutes*60+seconds; 
+	  }
+	};
+
+</script>
+
+
+
+<script>
+   function popUP() {
+   window.alert("Image upload restrictions: \n\n- allowed image types: gif, jpg, png\n- maximum size: 100kB\n- maximum width: 1024px\n- maximum heigth: 768px");
+   }
+</script>
+
+<script>
+$(document).ready(function() {
+
+	$('#summernote').summernote({
+		  fontNames: ['Arial', 'Arial Black', 'Courier New', 'Times New Roman', 'Verdana', 'Helvetica'],
+		  height: 400,                 // set editor height
+		  minHeight: null,             // set minimum height of editor
+		  maxHeight: null,             // set maximum height of editor
+		  focus: true,		  
+		  toolbar: [
+		  ['style', ['style']],
+		  ['font', ['bold', 'underline', 'italic', 'superscript', 'subscript', 'clear']],
+		  ['fontname', ['fontname']],
+		  ['color', ['color']],
+		  ['para', ['ul', 'ol', 'paragraph']],
+		  ['table', ['table']],
+		  ['insert', ['link', 'picture']],
+		  ['view', ['codeview', 'help']],
+		],
+		popover: {
+		  image: [
+			['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+			['float', ['floatLeft', 'floatRight', 'floatNone']],
+			['remove', ['removeMedia']]
+		  ],
+		  link: [
+			['link', ['linkDialogShow', 'unlink']]
+		  ],
+		  table: [
+			['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+			['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+		  ]
+		}
+
+	});
+
+{% if q.answer is defined %}
+	var HTMLstring = `{% autoescape false %}{{q.answer}}{% endautoescape %}`;
+	$('#summernote').summernote('code', HTMLstring);
+{% endif %}
+
+});
+</script>
+
+<script>
+$(document).on('click', ':not(form)[data-confirm]', function(e){
+    if(!confirm($(this).data('confirm'))){
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    }
+});
+</script>
+
+
+
+{% endblock %}
+
+
+
+									
+
+
+
+
+

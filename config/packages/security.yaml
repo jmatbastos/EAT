@@ -1,0 +1,58 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: auto
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: lazy
+            provider: app_user_provider
+            guard:
+                authenticators:
+                    - App\Security\UserAuthenticator
+            logout:
+                path: /logout
+                # where to redirect after logout
+                target: /elearn
+
+            remember_me:
+                name: 'REMEMBERME'
+                secret:   '%kernel.secret%'
+                lifetime: 2592000 # 30 days in seconds
+                remember_me_parameter: '_remember_me'
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
+          - { path: ^/question/answer, roles: ROLE_USER }        
+          - { path: ^/question, roles: ROLE_TEACHER }
+          - { path: ^/questions, roles: ROLE_TEACHER }
+          - { path: ^/curricularunits/delete, roles: ROLE_TEACHER }           
+          - { path: ^/curricularunits/add, roles: ROLE_TEACHER } 
+          - { path: ^/curricularchapters/add, roles: ROLE_TEACHER } 
+          - { path: ^/curricularsections/add, roles: ROLE_TEACHER }
+          - { path: ^/curriculargoals/add, roles: ROLE_TEACHER }            
+          - { path: ^/curricularchapters/edit, roles: ROLE_TEACHER }  
+          - { path: ^/curricularsections/edit, roles: ROLE_TEACHER }
+          - { path: ^/curriculargoals/edit, roles: ROLE_TEACHER }                                                        
+    role_hierarchy:
+        ROLE_TEACHER: ROLE_USER
+        ROLE_ADMIN: ROLE_TEACHER

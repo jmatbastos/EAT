@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New question{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('elearn')}}">Home</a></li>
+									<li class="active"><a class="nav-link" href="{{referer}}">Items</a></li>								
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact" >
+	
+		<div class="container">
+			<div class="row row-xl-eq-height">
+				<div class="col-xl-4">
+					<div class="contact_content">
+						<div class="contact_form_container">
+							<br>
+							<div class="card" style="width: 20rem;">
+							  <div class="card-body">
+							  	<h5 class="card-title">{{'Hint' | trans}}:</h5>
+								<p class="card-text">{{'Questions of secondary schools exams can be downloaded from' | trans}}  
+								   <a target="_blank" href="https://iave.pt/provas-e-exames/provas-e-exames/provas-e-exames-finais-nacionais-es/"><em>https://iave.pt/provas-e-exames/provas-e-exames/provas-e-exames-finais-nacionais-es/</em></a></p>
+							  </div>
+							</div>				
+						</div>	
+					</div>					
+				</div>					
+				<!-- Contact Content -->
+				<div class="col-xl-6">
+					<div class="contact_content">
+						<div class="contact_form_container">
+							<form id="form1" method="post">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token('question') }}">
+								
+								<div class="form-group">
+									<label>{{'Curricular Unit' | trans}}</label>
+									{% if curricularunits_id is empty %}
+									<select class="form-control" id="curricularunit" name="curricularunit" >
+										<option selected="true" disabled>{{'Choose the Curricular Unit' | trans }}</option>
+										{%for c in curricularunits %}
+											<option value="{{c.curricularunits_id}}">{{c.name}}</option>
+										{% endfor %}
+									</select>
+									{% else %}
+										<select class="form-control" id="curricularunit" name="curricularunit" >
+											{%for c in curricularunits %}
+												{% if c.curricularunits_id==curricularunits_id %}
+													<option value="{{c.curricularunits_id}}">{{c.name}}</option>												
+												{% endif %}
+											{% endfor %}
+										</select>									
+									{% endif %}
+								</div>
+								<br>
+								
+								<div class="form-group">
+									<label>{{'Chapter Unit' | trans}}</label>
+									<select class="form-control" id="chapter-dropdown" name="chapter">
+									</select>
+								</div>
+								<br>
+								
+								<div class="form-group">
+									<label>{{'Section Unit' | trans}}</label>
+									<select class="form-control" id="section-dropdown" name="section">
+									</select>
+								</div>
+								<br>
+								
+								<div class="form-group" style="visibility: hidden;" id="complexity-dropdown">
+									<label>{{'Question Complexity' | trans}}</label>
+									<select class="form-control" id="complexity" name="complexity" >
+										<option selected="true" disabled>{{'Choose the Question Complexity' | trans}}</option>
+										{%for c in complexities %}
+											<option value="{{c.complexities_id}}">{{c.description | trans}}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<br>
+								
+								<div id="more">
+								</div>
+								
+							</form>
+								<a href="{{referer}}"  class="btn btn-outline-warning btn-lg">{{'Cancel' | trans}}</a>	&nbsp;							
+								<button id="click" style="visibility: hidden;" class="btn btn-outline-info btn-lg" >{{'More' | trans}}</button>
+								<input form="form1" style="visibility: hidden;" type="submit" class="btn btn-outline-primary btn-lg float-right" value="{{'Next' | trans}}">
+						</div>
+
+					</div>
+				</div>
+				<div class="col-xl-2">
+				</div>	
+			</div>
+		</div>				
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script>
+
+	function handler() {
+
+		var selection = $( "#curricularunit" ).val();
+		var dropdown = $('#chapter-dropdown');
+
+		dropdown.empty();
+
+		dropdown.append('<option selected="true" disabled>{{"Choose Chapter Unit" | trans}}</option>');
+		dropdown.prop('selectedIndex', 0);
+
+		const url = '{{path('curricularchapters')}}/' + selection;
+
+		// Populate dropdown with list
+			$.getJSON(url, function (data) {
+			$.each(data, function (key, entry) {
+			dropdown.append($('<option></option>').attr('value', entry.curricularchapters_id).text(entry.description));
+		  })
+		});
+	
+	};
+
+    $('#curricularunit').change(handler)
+	if ( $('#curricularunit').val() ) handler()
+	
+	$('#chapter-dropdown').change(function() {
+
+		var selection = $( "#chapter-dropdown" ).val();
+		var dropdown = $('#section-dropdown');
+
+		dropdown.empty();
+
+		dropdown.append('<option selected="true" disabled>{{"Choose Section Unit" | trans}}</option>');
+		dropdown.prop('selectedIndex', 0);
+
+		const url = '{{path('curricularsections')}}/' + selection;
+
+		// Populate dropdown with list
+			$.getJSON(url, function (data) {
+			$.each(data, function (key, entry) {
+			dropdown.append($('<option></option>').attr('value', entry.curricularsections_id).text(entry.description));
+		  })
+		});
+	
+	});
+	
+	$('#section-dropdown').change(function() {
+		$("#complexity-dropdown").css("visibility", "visible");
+	});
+	
+	$('#complexity-dropdown').change(function() {
+		$("input.btn").css("visibility", "visible");
+		$('#click').css("visibility", "visible");
+	});
+
+
+</script>
+
+<script>
+    $('#click').click(function() {
+	
+		if ( $('#click').text() == "{{'More' | trans}}" ) {
+			$('#more').append('<div class="form-group"><label>{{'Resolution Time' | trans}}</label><input class="form-control" type="number" size="10" min="1" max="90" name="resolution_time" placeholder="in minutes"></div><div class="form-group"><label>{{'Cognitive Goals' | trans}}</label><br><div class="form-control">{%for cg in cognitivegoals %}	<label><input type="checkbox" name="cognitivegoals[]" value="{{cg.cognitivegoals_id}}">&nbsp;{{cg.description}}</label><br>{% endfor %}</div></div><div class="form-group"><label>{{'Curricular Skills' | trans}}</label><br><div class="form-control">{%for sk in curricularskills %}<label><input type="checkbox" name="curricularskills[]" value="{{sk.curricularskills_id}}">&nbsp;{{sk.description}}</label><br>{% endfor %}</div>									</div>');
+			$('#click').text("{{'Less' | trans}}")	
+		}
+		else {
+			$('#more').children().remove();
+			$('#click').text("{{'More' | trans}}")	
+		}	
+
+
+		
+	
+	});
+</script>
+
+{% endblock %}
+
+
+

@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New question{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('elearn')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="{{path('questions')}}">Items</a></li>								
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact" >
+	
+		<div class="container">
+			<div class="row row-xl-eq-height">
+				<div class="col-xl-3">
+				</div>					
+				<!-- Contact Content -->
+				<div class="col-xl-6">
+					<div class="contact_content">
+						<div class="contact_form_container">
+						
+						
+				   {% if errors > 0 %}
+					   <h2>{{'Validation failed' | trans}}</h2>
+					   <ul>
+					   {% for field, errorMessage in errorMessages %}
+						   <li>{{ errorMessage | trans }}</li>
+					   {% endfor %}
+					   </ul>
+					   <br>
+					{% endif %}
+						
+						
+							<form enctype="multipart/form-data" method="post">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token('question') }}">
+														
+								<div class="form-group">
+								    <label for="imageUpload"><strong>Image Upload</strong></label>
+									<input type="file" class="form-control-file" id="imageUpload" name="file" />
+								</div>								
+								<br>
+
+							   <div>
+								<p>{{'Before uploading, check out the' | trans}} <a href="#" onmouseover="popUP()">{{'Image upload restrictions' | trans}}</a>.</p>
+							   </div>
+
+								<br>
+								
+								<a href="{{ path('questions') }}" class="btn btn-outline-warning btn-lg" >{{'Cancel' | trans}}</a>								
+								<button type="submit" class="btn btn-outline-primary btn-lg float-right">{{'Submit' | trans}}</button>							
+							</form>
+						</div>
+
+					</div>
+				</div>
+				<div class="col-xl-3">
+				</div>	
+			</div>
+		</div>				
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+
+<script>
+   function popUP() {
+   window.alert("Image upload restrictions: \n\n- allowed image types: gif, jpg, png\n- maximum size: 100kB\n- maximum width: 1024px\n- maximum heigth: 768px");
+   }
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+

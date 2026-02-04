@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Curricular Unit{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('menu')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="{{path('curricularunits')}}">{{'Curricular Units' | trans}}</a></li>								
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact" >
+	
+		<div class="container">			
+			<div class="row row-xl-eq-height">
+
+
+
+				<div class="col-xl-4">
+					<div class="contact_content">
+						<div class="contact_form_container">
+							<br>
+							<div class="card" style="width: 20rem;">
+							  <div class="card-body">
+							  	<h5 class="card-title">{{'Hint' | trans}}:</h5>
+								<p class="card-text">{{'The curricular units description can be downloaded from' | trans}}  
+								   <a target="_blank" href="http://www.dge.mec.pt/aprendizagens-essenciais-ensino-secundario"><em>http://www.dge.mec.pt/aprendizagens-essenciais-ensino-secundario</em></a></p>
+							  </div>
+							</div>				
+						</div>	
+					</div>					
+				</div>					
+				<!-- Contact Content -->
+
+				<div class="col-xl-5">
+
+					<div class="contact_content">
+						<div class="contact_form_container">
+							{% if errors > 0 %}
+							   <h2>{{'Validation failed' | trans}}</h2>
+							   <ul>
+							   {% for field, errorMessage in errorMessages %}
+								   <li>{{ errorMessage | trans}}</li>
+							   {% endfor %}
+							   </ul>
+							   <br>
+							{% endif %}						
+							<form method="post">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token('curricularunit') }}">
+								
+								<div class="form-group">
+									<label>{{'Curricular Unit Name' | trans}}</label>
+									<input class="form-control" type="text" size="60" name="name">	
+								</div>
+								<br>
+								
+								<div class="form-group">
+								    <label>{{'Curricular Unit Year' | trans}}</label>
+									<!--<input class="form-control" type="integer" size="60" placeholder="example: 10" name="year"> -->
+									<select class="form-control" type="integer" name="year" >
+										<option selected="true" disabled>{{'Choose the year' | trans}}</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+									</select>								
+								</div>
+
+								<br>
+								
+								<div class="form-group">
+								    <label>{{'Language' | trans}}</label>
+									<select class="form-control" name="language" >
+										<option selected="true" disabled>{{'Choose the language' | trans}}</option>
+										{%for l in languages %}
+										<option value="{{l.languages_id}}">{{l.name}}</option>
+										{% endfor %}
+									</select>	
+								</div>
+								
+								<br>
+															
+
+								<a id="close" class="btn btn-outline-warning btn-lg" >{{'Cancel' | trans}}</a>
+														
+								<input type="submit" class="btn btn-outline-primary btn-lg float-right" value="{{'Next' | trans}}">
+
+						
+							</form>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="col-xl-3">	
+				</div>
+
+			</div>
+		</div>				
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+<script>
+
+	$(function () {
+	  $('#close').click(function () {
+		window.close()
+		return false
+	  })
+	})
+	
+</script>
+{% endblock %}
+
+
+
+
+

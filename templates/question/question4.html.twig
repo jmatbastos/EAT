@@ -1,0 +1,202 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New question{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/bootstrap4/bootstrap.min.css">
+<script src="https://cdn.tiny.cloud/1/l4jdeg9xkbp6ujz97402tokfj3u26c0vhi32tavzfv9bnp3x/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/main_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('elearn')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="{{ referer }}">{{'Items' | trans}}</a></li>								
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact" >
+	
+		<div class="container">
+			<div class="row row-xl-eq-height">
+				<div class="col-xl-1">
+				</div>					
+				<!-- Contact Content -->
+				<div class="col-xl-10">
+					<div class="contact_content">
+						<div class="contact_form_container">
+						
+						
+				   {% if errors > 0 %}
+					   <h2>{{'Validation failed' | trans}}</h2>
+					   <ul>
+					   {% for field, errorMessage in errorMessages %}
+						   <li>{{ errorMessage | trans }}</li>
+					   {% endfor %}
+					   </ul>
+					   <br>
+					{% endif %}
+						
+							<div id="Form" style="display:none;">
+								<form id="new_source" method='post' action="{{path('add_source')}}">
+									<strong>{{'New Source' | trans}}</strong>	&nbsp;&nbsp;
+									<input class='form-control' type='text' size='100' name='description' placeholder="IAVE"><br>
+									<strong>{{'URL' | trans}}</strong>	&nbsp;&nbsp;									
+									<input class='form-control' type='text' size='100' name='href' placeholder="http://www.example.com"><br>
+									<a id="hideForm" class='btn btn-outline-warning btn-sm' >{{'Cancel' | trans}}</a>&nbsp;&nbsp;
+									<input form="new_source" type='submit' class='btn btn-outline-info btn-sm' value={{'Submit' | trans}}>
+								</form>
+							</div>	
+
+							<form method="post">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token('question') }}">
+
+								<div id="Div">
+									<div class="form-inline">
+										<label><strong>{{'Source' | trans}}</strong></label>	&nbsp;&nbsp;																		
+										<select class="form-control" name="source" >
+											<option selected="true" disabled>{{'Choose the Item Source' | trans }}</option>
+											{%for s in sources %}
+												<option value="{{s.sources_id}}">{{s.description}}</option>
+											{% endfor %}
+										</select>&nbsp;&nbsp;		
+									<a id="newSource" class="btn btn-outline-primary">{{'New Source' | trans}}</a>																				
+									</div>									
+								</div>
+									
+					
+								<br />
+
+								<div class="form-inline">
+								    <label for="title"><strong>{{'Title' | trans}}</strong></label>&nbsp;&nbsp;
+									<input class="form-control" type="text" name="title" value="{{title}}" size="80">	
+								</div>
+								
+								<br>
+								
+								<div class="form-group">
+								    <label for="imageUpload"><strong>{{'Content' | trans}}</strong></label>
+									<textarea name="content">{{content}}</textarea>	
+								</div>
+
+								<br>								
+
+								<div class="form-group">
+										<label for="imageUpload"><strong>{{'Correct Answer' | trans}}</strong</label>
+										<textarea name="correct_answer">{{correct_answer}}</textarea>	
+								</div>
+								
+							
+								<br>
+
+							   <div>
+								<p>{{'Before uploading, check out the' | trans}} <a href="#" onmouseover="popUP()">{{'Image upload restrictions' | trans}}</a>.</p>
+							   </div>
+
+								<br>
+								
+								<a href="{{ referer }}" class="btn btn-outline-warning btn-lg" >{{'Cancel' | trans}}</a>								
+								<button type="submit" class="btn btn-outline-primary btn-lg float-right">{{'Submit' | trans}}</button>	
+							
+							</form>
+						</div>
+
+					</div>
+				</div>
+				<div class="col-xl-1">
+				</div>	
+			</div>
+		</div>				
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/popper.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/bootstrap.min.js"></script>
+
+
+<script>
+   function popUP() {
+   window.alert("Image upload restrictions: \n\n- allowed image types: gif, jpg, png\n- maximum size: 100kB\n- maximum width: 1024px\n- maximum heigth: 768px");
+   }
+</script>
+
+ <script>
+    tinymce.init({
+    selector: 'textarea',
+    height: 500,
+    paste_data_images: true,
+  plugins: [
+    'advlist autolink lists link image charmap print preview anchor',
+    'searchreplace visualblocks code fullscreen',
+    'insertdatetime media table paste imagetools wordcount'
+  ],
+  menubar: 'file edit view insert format tools table',
+  toolbar: 'undo redo | styleselect | bold italic subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link code tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry',
+  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+  images_upload_handler: function (blobInfo, success, failure) {
+    success("data:" + blobInfo.blob().type + ";base64," + blobInfo.base64());
+  },
+  external_plugins: { 'tiny_mce_wiris' : '{{ asset('plugins') }}/mathtype/plugin.min.js' }
+});
+
+</script>
+
+<script>
+
+	$("#newSource").click(function(){
+	 $("#Div").hide();
+	 $("#Form").show(); 
+	});
+
+	$("#hideForm").click(function(){
+	 $("#Div").show();
+	 $("#Form").hide(); 
+	}); 
+
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+

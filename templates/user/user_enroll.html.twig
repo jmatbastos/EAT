@@ -1,0 +1,130 @@
+ {% extends 'base.html.twig' %}
+
+{% block title %}User Enroll{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news_responsive.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	
+
+	<!-- News -->
+	<div class="news">
+		<div class="container">
+			<div class="row justify-content-center">
+				<h3>{{'Select Curricular Unit to enroll' | trans}}:</h3>
+			</div>
+		  
+		  </br>
+		  
+		  
+		  <div class="row">
+			<div class="col">
+			<h4 style="text-align:center;">{{'Curricular Units Enrolled' | trans}}</h4>
+			
+			{% if enrolled_curricular_units is defined %}
+			  {%for e in enrolled_curricular_units %}
+
+				  <p>
+					{% if is_granted('ROLE_ADMIN') and e.roles=='["ROLE_TEACHER"]'%}	
+						{% if e.curricularunit_has_reviewers_id==NULL %}				   
+							<a href="{{ path('user_enroll_reviewer', {'id' : e.id, 'users_id' : users_id } ) }}"><i class="fa fa-square-o"></i> </a>&nbsp;
+						{% else %}
+							<a href="{{ path('user_unenroll_reviewer', {'id' : e.id, 'users_id' : users_id } ) }}"><i class="fa fa-check-square-o"></i> </a>&nbsp;			
+						{% endif %}	
+					{% endif %}	
+				  <a href="{{ path('user_unenroll_unit', {'id' : e.id, 'users_id' : users_id } ) }}">{{e.name}}&nbsp;<i class="fa fa-arrow-right"></i> </a>
+				  </p>
+	  
+			  {% endfor %}
+			{% endif %}
+			
+			</div>
+			<div style="border-left-style: solid;border-left-color: coral;border-right-color: white;border-top-color: white;border-bottom-color: white;" class="col">
+
+				<h4 style="text-align:center;">{{'Available Curricular Units' | trans}}</h4>
+
+					<div>
+					
+						{% if curricular_units_not_enrolled is defined %}
+						  {%for c in curricular_units_not_enrolled %}
+							  <p>
+							  <a href="{{ path('user_enroll_unit', {'id' : c.id, 'users_id' : users_id} )  }}"><i class="fa fa-arrow-left"></i>&nbsp;{{c.name}} </a>
+							  </p>
+				  
+						  {% endfor %}
+					{% endif %}
+					
+					
+					</div>
+
+				
+
+			</div>
+		  </div>
+		  	{% if is_granted('ROLE_TEACHER')%}		
+				<a id="close" class="btn btn-outline-info btn-lg" style="float:right;">{{'Close' | trans}}</a>
+			{% else %}					
+					<a href="{{ path('menu')}}" class="btn btn-outline-info btn-lg" style="float:right;">{{'Close' | trans}}</a>			
+			{% endif %}
+		 </div>	
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+
+<script>
+	$(function () {
+	  $('#close').click(function () {
+		window.close()
+		return false
+	  })
+	})
+</script>
+{% endblock %}
+
+
+
+
+
+									
+
+
+
+
+

@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+							</nav>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact" style="background-image:url({{asset('images')}}/contact.jpg); background-repeat: no-repeat;">>
+	
+		<div class="container">
+			<div class="row row-xl-eq-height">
+				<div class="col-xl-3">
+				</div>					
+				<!-- Contact Content -->
+				<div class="col-xl-6">
+					<div class="contact_content">
+						<div class="contact_form_container">
+                            <h2>Password Reset</h2>
+							{{ form_start(resetForm) }}							
+								<div class="row">
+
+										{{ form_label(resetForm.plainPassword.first) }}
+										{{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'contact_input'}}) }}
+								</div>
+                                <br>
+								<div class="row">                                                                        
+										{{ form_label(resetForm.plainPassword.second) }}
+										{{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'contact_input'}}) }}
+
+								</div>								
+								<br>						
+
+								<br>
+								{{ form_errors(resetForm.plainPassword.first) }}
+								{{ form_errors(resetForm.plainPassword.second) }}
+
+                                <button class="btn btn-outline-primary btn-lg float-right">Reset password</button>							
+							{{ form_end(resetForm) }}
+						</div>
+
+					</div>
+				</div>
+				<div class="col-xl-3">
+				</div>	
+			</div>
+		</div>				
+	</div>
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

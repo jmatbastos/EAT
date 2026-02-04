@@ -1,0 +1,193 @@
+Welcome!: Bem-vindo!
+Come Learn with Us!: Vem aprender connosco!
+Personalized Assessment and Testing: Avaliação e Testagem personalizada
+Home: Início
+Remember me: Lembra-me
+You are logged in as: Bem-vindo
+Curricular Units: Unidades Curriculares
+Curricular Unit: Unidade Curricular
+Curricular Unit Year: Ano da Unidade Curricular
+Curricular Unit Name: Nome da Unidade Curricular
+Users: Utilizadores
+User: Aluno
+Statistics: Estatísticas
+Items: Itens
+All Items: Todos os itens
+Exams: Exames
+Exam: Exame
+All Exams: Todos os exames
+Attempts: Tentativas
+All Attempts: Todas as tentativas
+Show: Mostrar
+show: mostrar
+Delete: Apagar
+New Curricular Unit: Nova Unidade Curricular
+New Curricular Chapter: Novo Capítulo
+New Curricular Section: Nova Secção
+New Curricular Goal: Nova Aprendizagem Essencial
+Created by: Introduzido por
+Created: Introduzido em
+Updated: Actualizado em
+Language: Língua
+Year: Ano
+Cancel: Cancelar
+Update: Actualizar
+Chapters: Capítulos
+Chapter: Capítulo
+Sections: Secções
+Section: Secção
+Goals: Aprendizagens Essenciais
+Close: Fechar
+Submit: Submeter
+Curricular Chapter Name: Nome do capítulo
+Curricular Chapter: Capítulo
+Curricular Section Name: Nome da secção
+Curricular Section: Secção
+Curricular Goal: Aprendizagens Essenciais
+New User: Novo Utilizador
+Registration Date: Data do Registo
+enroll: inscrever
+Are you sure you want to delete this user: Tem a certeza que quer remover este utilizador
+Curricular Units Enrolled: Unidades Curriculares inscritas
+Available Curricular Units: Unidades Curriculares
+Select Curricular Unit to enroll: Seleccione a Unidade Curricular
+Finish: Concluir
+Name: Nome
+New Item: Novo Item
+Edit: Editar
+Are you sure you want to delete this question: Tem a certeza que quer remover este item
+Are you sure you want to delete this curricular unit: Tem a certeza que quer remover esta unidade curricular
+Are you sure you want to delete this exam: Tem a certeza que quer remover este exame
+Chapter Unit: Capítulo
+Section Unit: Secção
+Question Complexity: Complexidade
+Difficulty: Complexidade
+Title: Título
+Content: Conteúdo
+Correct Answer: Resposta Correcta
+Before uploading, check out the: Obedeça às 
+Image upload restrictions: restrições para o carregamento de imagens
+Hint: Sugestão
+Questions of secondary schools exams can be downloaded from: Os exames do ensino secundário podem ser descarregados de
+The curricular units description can be downloaded from: A descrição da Unidade Curricular pode ser descarregada de
+More: Mais
+Less: Menos
+Next: Continuar
+Resolution Time: Tempo de resolução
+Curricular Skills: Áreas de Competências do Perfil dos Alunos (ACPA)
+Cognitive Goals: Objectivos Cognitivos
+Question Upload: Item upload
+New Exam: Novo Exame
+Creation Date: Data
+By: Por
+Exam is visible to students: Exame visível para os alunos
+Exam is hidden to students: Exame invisível para os alunos
+attempt: realizar
+Results: Resultados
+Edit Exam: Editar
+Time: Tempo
+Total number of questions: Número total de itens
+Total number of points: Número total de pontos
+Question: Item
+Points: Pontuação
+Exam name: Título do exame
+Exam length: Duração do Exame
+Exam Introduction: Introdução
+Choose the number of questions of each chapter: Escolha o número de itens em cada capítulo
+Select questions to add to exam: Seleccione os itens a adicionar ao exame
+Questions: Itens
+Start date: Início
+Finish date: Fim
+Student: Aluno
+Teacher: Professor
+Grade: Avaliação
+grade: Nota
+Are you sure you want to delete this attempt: Tem a certeza que quer apagar este exame do aluno
+Student answer: Resposta do aluno
+Not answered: Aluno não respondeu
+Correct answer: Resposta correcta
+Comments: Comentários
+Started on: Início
+Completed: Fim
+Grade/20: Nota/20
+download in CSV format: Download no formato CSV
+Text Answer: Resposta escrita
+Manuscript Answer: Resposta manuscrita
+Time Remaining: Tempo restante
+Back: Anterior
+Are you sure you want to finish the exam: Tem a certeza que quer terminar o exame
+Draw: Desenhar
+Erase: Apagar
+Undo: Cancelar
+Clear: Reiniciar
+Choose the year: Escolha o ano curricular
+Choose the language: Escolha a língua
+Choose the Curricular Chapter: Escolha o capítulo
+Choose the Curricular Section: Escolha a secção
+Learning: Aprender
+Precision: Rigor
+Register: Registar
+Not yet registered: Ainda não tem conta
+Register here: Registe-se aqui
+Repeat Password: Repetir Password
+The attempts database is empty: Ainda não há tentativas realizadas
+The exams database is empty: Ainda não há exames gerados
+The items database is empty. Please insert a new item.: A base de dados de itens desta categoria está vazia. Insira um novo item.
+User Created, Please check your email to activate your account.: Bem-vindo(a), foi enviado um email para activar a sua conta.
+User Created, Enroll User now in a Curricular Unit: Utilizador foi criado, inscreva agora o utilizador na Unidade Curricular
+Total number of questions available in this Curricular Unit: Número total de itens disponíveis nesta Unidade Curricular
+This Curricular Unit does not have questions yet: Esta Unidade Curricular ainda não tem itens introduzidos
+The answer content cannot be longer than 102400 characters: O conteúdo da resposta não pode ter mais que 102400 caracteres
+The comments content cannot be longer than 102400 characters: O conteúdo dos comentarios não pode ter mais que 102400 caracteres
+The name must not be blank: Tem que introduzir o nome
+The name cannot be longer than 60 characters: O nome não pode ter mais de 60 caracteres
+The year is not chosen: Tem que escolher o ano
+The year must be 10, 11 or 12: O ano tem que ser 10, 11, ou 12
+The year must be an integer: O ano tem que ser 10, 11, ou 12
+The language is not chosen: Tem que escolher a lingua
+The exam name must not be blank: Tem que dar um nome ao exame
+The exam length must not be blank: Tem que definir o tempo de duração do exame
+The exam must have at least one question: O exame tem que ter pelo menos um item
+The question content cannot be longer than 102400 characters: O conteúdo do item não pode ter mais que 102400 caracteres
+The question answer cannot be longer than 102400 characters: A resposta do item não pode ter mais que 102400 caracteres
+The question title cannot be longer than 80 characters: O título do item não pode ter mais de 80 caracteres
+The question title must not be blank: Tem que introduzir o título
+The question content must not be blank: Tem que introduzir o conteúdo do item
+The introduction content cannot be longer than 204800 characters: O conteúdo da introdução não pode ter mais que 204800 caracteres 
+Validation failed: Erro
+Question is in use in exams: O Item está a ser utilizado num exame
+Exam has attempts: Existem tentativas deste exame
+Permission denied, Curricular Unit does not belong to you: Não tem permissões para apagar esta Unidade Curricular 
+Permission denied, Curricular Unit has exams: A Unidade Curricular tem exames gerados
+Permission denied, Curricular Unit has items: A Unidade Curricular tem itens gerados
+Permission denied, Curricular Unit has attempts: Existem tentativas nesta Unidade Curricular
+Choose the Curricular Unit: Escolha a Unidade Curricular
+Choose the Question Complexity: Escolha a complexidade do item
+Choose Chapter Unit: Escolha o capítulo
+Choose Section Unit: Escolha a secção
+minutes: minutos
+Filter: Filtrar
+Source: Fonte
+Choose the Item Source: Escolha a fonte do item
+New Source: Nova Fonte
+Print: Pdf
+easy: fácil
+medium: média
+hard: difícil
+in minutes: em minutos
+Edit maximum mark: Alterar a pontuação
+grade must be less than or equal to maximum mark: a nota tem que ser menor ou igual à pontuação máxima
+grade must be equal to or greater than zero: a nota tem que ser igual ou maior do que zero
+Password forgotten: Recuperar a password
+Reset it here: Entrar aqui
+Enter your email address and we will send you a link to reset your password: Será enviado um link para fazer reset à password
+Send password reset email: Enviar email
+Dear: Caro(a)
+To reset your password, please visit the following link: Para atribuir uma nova password clique no link
+This link will expire in: Este link expira em
+If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password: Foi enviado um email com um link para fazer reset à password
+If you didn't receive an email please check your spam folder or: Verifique se o email está no spam ou
+try again: faça mais uma tentativa
+Your email address has been successfully validated. You can now login to your account.: O seu email foi validado com sucesso. Já pode entrar na sua conta.
+New password: Nova password
+Password reset successfully. You can now login to your account.: Password alterada com sucesso. Já pode entrar na sua conta.

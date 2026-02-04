@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Curricular Goal{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a href="{{path('menu')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a href="{{path('del_curricularunit', {'id': curricularunits_id}) }}">{{'Curricular Units' | trans}}</a></li>								
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact" >
+	
+		<div class="container">
+			<div class="row row-xl-eq-height">
+
+
+				
+				<!-- Contact Content -->
+
+				<div class="col-xl-12">
+
+					<div class="contact_content">
+						<div class="contact_form_container">
+
+						<h2>{{'New Curricular Goal' | trans}}</h2><br />	
+
+							{% for message in app.flashes('notice') %}
+								<div class="alert alert-warning" style="text-align:center">
+								{{ message | trans }}
+								</div>
+							{% endfor %}					
+							<form id="form1" method="post">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token('curriculargoal') }}">
+								
+								<div class="row">								
+									<div class="col">
+
+											<label>{{'Curricular Goal' | trans}}</label>
+											<textarea class="form-control" rows="10" cols="50" name="description[]">
+											</textarea>
+
+									</div>
+									<div class="col">							
+
+											<label>{{'Curricular Section' | trans}}</label>
+											<select class="form-control"  name="curricularsection[]" >
+												<option selected="true" disabled>{{'Choose the Curricular Section' | trans}}</option>
+												{%for s in curricularsection %}
+													<option value="{{s.curricularsections_id}}">{{s.description}}</option>
+												{% endfor %}
+											</select>
+
+									</div>
+								</div>
+								
+								<br>							
+								
+								<div id="more">
+								</div>
+
+							</form>								
+									
+								<br>
+								
+								<button id="clickMore" class="btn btn-outline-info btn-lg" >{{'More' | trans}}</button>&nbsp;&nbsp;
+								<button id="clickLess" class="btn btn-outline-info btn-lg" >{{'Less' | trans}}</button>
+								<br>
+								<br>
+								<br>
+								<a id="close"  class="btn btn-outline-warning btn-lg" >{{'Cancel' | trans}}</a>
+														
+								<input form="form1" type="submit" class="contact_button float-right" value="{{'Submit' | trans}}">
+
+						
+
+						</div>
+
+					</div>
+				</div>
+
+
+
+			</div>
+		</div>				
+	</div>
+</div>
+
+{% endblock %}
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+<script>
+
+    $('#clickMore').click(function() {
+
+		var more = $('#more');
+		more.append('<div class="row"><div class="col"><label>{{"Curricular Goal" | trans}}</label><textarea class="form-control" rows="10" cols="50" name="description[]"></textarea></div><div class="col"><label>{{"Curricular Section" | trans}}</label><select class="form-control" name="curricularsection[]" ><option selected="true" disabled>{{"Choose the Curricular Section" | trans}}</option>{%for s in curricularsection %}<option value="{{s.curricularsections_id}}">{{s.description}}</option>{% endfor %}</select></div></div><br>');
+	
+	});
+
+	$('#clickLess').click(function() {
+		$('#more').children().last().remove();
+		$('#more').children().last().remove();
+	});	
+
+	$(function () {
+	  $('#close').click(function () {
+		window.close()
+		return false
+	  })
+	})	
+	
+</script>
+{% endblock %}
+
+
+
+

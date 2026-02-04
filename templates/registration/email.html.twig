@@ -1,0 +1,18 @@
+<h1>Caro {{ username }},</h1>
+
+<p>
+    Bem-vindo à aplicação EAT!
+</p>
+
+<p>
+    Confirme o seu email clicando no link seguinte: <br /><br />
+    <a href="{{absolute_url(path('account/activate', {'id' : reset_digest}))}}">{{absolute_url(path('account/activate', {'id' : reset_digest}))}}</a>
+    <br />
+    <br />
+    Este link expira em {{expiration_date | date('d.m, H:i')}}.
+</p>
+
+<p>
+    José Bastos
+</p>
+ <p>Web: <a href="https://caies.ualg.pt/eat">https://caies.ualg.pt/eat</a></p>

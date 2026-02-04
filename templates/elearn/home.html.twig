@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Elearn{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+	
+	<!-- Home -->
+
+	<div class="home">
+		<div class="home_slider_container">				
+			<!-- Home Slider -->
+			<div class="owl-carousel owl-theme home_slider">
+			
+				<!-- Slider Item -->
+				<div class="owl-item">	
+					<!-- Background image artist https://unsplash.com/@benwhitephotography -->
+					<div class="home_slider_background" style="background-image:url({{asset('images')}}/index1.jpg)"></div>
+					<div class="home_container">
+						<div class="container">
+							<div class="row">
+								<div class="col">
+									<div class="home_content text-center">
+										<div class="home_logo"><img src="{{asset('images')}}/UAlg.png" alt=""></div>
+										<div class="home_text">
+											<div class="home_title"> CAiEs / e-ATp 
+											<h1 style="color:white;">{{'Personalized Assessment and Testing' | trans }}</h1></div> 
+										</div>
+										<div class="home_buttons">
+										{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+											<div class="button home_button"><a href="{{path('menu')}}">{{'Welcome!' | trans }}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+										{% else %}
+											<div class="button home_button"><a href="{{path('login')}}">{{'Welcome!' | trans }}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+											<a style="color: white;" href="{{asset('pt')}}/elearn">PT</a>&nbsp;<a style="color: white;" href="{{asset('en')}}/elearn">EN</a>
+										{% endif %}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Slider Item -->
+				<div class="owl-item">
+					<!-- Background image artist https://unsplash.com/@benwhitephotography -->
+					<div class="home_slider_background" style="background-image:url({{asset('images')}}/index1.jpg)"></div>
+					<div class="home_container">
+						<div class="container">
+							<div class="row">
+								<div class="col">
+									<div class="home_content text-center">
+										<div class="home_logo"><img src="{{asset('images')}}/home_logo.png" alt=""></div>
+										<div class="home_text">
+											<div class="home_title">CAiEs / e-ATp
+											<h1 style="color:white;"> - Stress ! + {{'Learning' | trans}} ! + {{'Precision' | trans}} ! </h1></div>
+										</div>
+										<div class="home_buttons">
+										{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+											<div class="button home_button"><a href="{{path('menu')}}">{{'Welcome!' | trans }}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+										{% else %}
+											<div class="button home_button"><a href="{{path('login')}}">{{'Welcome!' | trans }}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+											<a style="color: white;" href="{{asset('pt')}}/elearn">PT</a>&nbsp;<a style="color: white;" href="{{asset('en')}}/elearn">EN</a>
+											{% endif %}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+{% endblock %}
+

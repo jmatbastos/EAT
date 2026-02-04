@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Attempt{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('elearn')}}">Home</a></li>
+									<li class="active"><a class="nav-link" href="{{referer}}">{{'Attempts' | trans }}</a></li>								
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact_content">
+	
+		<div class="container">
+		
+			<div class="row row-xl-eq-height">
+				<div class="col-xl-3">
+					<p> <strong>{{'Exam name' | trans}}:</strong> {{attempt.exams_name}}</p>
+					<p> <strong>{{'Start date' | trans}}:</strong> {{attempt.start_date}}</p>
+					<p> <strong>{{'Student' | trans}}:</strong> {{attempt.user}}</p>
+				</div>
+				<div class="col-xl-9" style="text-align: center;">
+				</div>
+			</div>
+			
+			<hr/>
+			
+			{%for q in questions %}
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+						<p><strong>{{'Question' | trans}} {{loop.index}}</strong></p>
+						<p><strong>{{'Points' | trans}}:</strong> {{q.marks}}</p>							
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-9">
+						
+						<p><strong>{{'Question' | trans}}</strong></p>
+						
+						{% if q.type == 6 %}
+							<img class="img-responsive" src="{{asset('uploads/questions')}}/{{q.content}}" alt="">
+						{% endif %}
+						{% if q.type == 5 %}
+							{% autoescape false %}{{q.content}}{% endautoescape %}
+						{% endif %}
+						{% if q.type == 4 %}
+							{% autoescape false %}{{q.content}}{% endautoescape %}
+						{% endif %}
+						
+
+						<p><strong>{{'Student answer' | trans}}</strong></p>	
+
+						{% if q.answer is defined and q.answertypes_id == "5" %}						
+							{% autoescape false %}{{q.answer}}{% endautoescape %}
+						{% endif %}
+
+						{% if q.answer is defined and q.answertypes_id == "6" %}						
+							<img src="{{q.answer}}">
+						{% endif %}
+						
+					</div>		
+				</div>
+				<hr/>
+			{% endfor %}
+		
+			<br>
+			
+			<div class="row justify-content-end">
+				<div class="btn btn-outline-primary btn-lg"><a href="{{referer}}">{{'Close' | trans}}</a></div>
+			</div>
+		
+		
+		
+		</div>				
+	
+	</div>
+
+</div>
+
+{% endblock %}
+
+
+
+
+
+									
+
+
+
+
+

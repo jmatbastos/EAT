@@ -1,0 +1,214 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Curricular Unit Details{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+<style>
+h2:hover, h3:hover {
+color: red;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header">
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li><a class="nav-link" href="{{path('elearn')}}">{{'Home' | trans}}</a></li>
+									<li class="active"><a class="nav-link" href="{{path('curricularunits')}}">{{'Curricular Units' | trans}}</a></li>										
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Contact -->
+
+	<div class="contact_content">
+	
+		<div class="container">
+		
+		
+		
+			<div class="row row-xl-eq-height">		
+				<div class="col-xl-3">
+					<br>
+					<p> <strong>{{'Created by' | trans}}:</strong> {{curricularunit.uname}}</p>
+					<p> <strong>{{'Created' | trans}}:</strong> {{curricularunit.created_at}}</p>
+					<p> <strong>{{'Updated' | trans}}:</strong> {{curricularunit.updated_at}}</p>
+					<p> <strong>{{'Language' | trans}}:</strong> {{curricularunit.lname}}</p>
+				</div>
+				<div class="col-xl-9" style="text-align: center;">
+					<br>
+					<br>
+					<br>
+					<div id="Div">
+						<h2 >{{curricularunit.name}}</h2>
+						<h3 >{{'Year' | trans}}: {{curricularunit.year}}</h3>
+					</div>
+					<div id="Form" style="display:none;">
+						<form method='post' action="{{path('edit_curricularunit')}}/{{curricularunit.curricularunits_id}}">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token('edit_curricularunit') }}">
+						<input class='form-control' type='text' size='60' name='name' value='{{curricularunit.name}}'><br>
+						<input class='form-control' type='integer' size='60' name='year' value='{{curricularunit.year}}'><br>
+						<a id="hideForm" class='btn btn-outline-warning btn-sm' >{{'Cancel' | trans}}</a>&nbsp;&nbsp;
+						<input type='submit' class='btn btn-outline-info btn-sm' value={{'Update' | trans}}>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			
+			<br>
+			<br>
+			
+			<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+					{% if owner %}
+						<p><a onclick="openWindow('{{path('add_curricularchapters')}}');"><strong>{{'Chapters' | trans}}</strong></a></p>
+					{% else %}	
+						<p><strong>{{'Chapters' | trans}}</strong></p>
+					{% endif %}		
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-3">
+					{% if owner %}					
+						<p><a onclick="openWindow('{{path('add_curricularsections')}}');"><strong>{{'Sections' | trans}}</strong></a></p>	
+					{% else %}	
+						<p><strong>{{'Sections' | trans}}</strong></p>
+					{% endif %}							
+					</div>	
+					<div class="col-xl-3">
+					{% if owner %}						
+						<p><a onclick="openWindow('{{path('add_curriculargoals')}}');"  ><strong>{{'Goals' | trans}}</strong></a> <i id="show_goals" class="fa fa-eye" aria-hidden="true"></i></p>	
+					{% else %}	
+						<p><strong>{{'Goals' | trans}}</strong>  <i id="show_goals" class="fa fa-eye" aria-hidden="true"></i></p>
+					{% endif %}						
+					</div>						
+			</div>
+			
+			
+			<hr/>
+			
+			{%for c in curricularchapters %}
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+					{% if owner %}						
+						<p><a onclick="openWindow('{{path('edit_curricularchapter')}}/{{c.curricularchapters_id}}');"><strong>{{c.description}}</strong></a></p>			
+					{% else %}	
+						<p><strong>{{c.description}}</strong></p>			
+					{% endif %}	
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-3">
+						<ul>
+						   {% for s in c.curricularsections %}
+								{% if owner %}							   
+									<li><a onmouseout="this.removeAttribute('href')" onmouseover="this.href=''" onclick="event.preventDefault();openWindow('{{path('edit_curricularsection')}}/{{s.curricularsections_id}}');">{{s.description}}</a></li>	
+								{% else %}	
+									<li>{{s.description}}</li>
+								{% endif %}							  	
+						   {% endfor %} 
+						</ul>
+					</div>
+
+					<div class="col-xl-6" style="display: none;">									
+						   {% for s in c.curricularsections %}
+									<ul>						   
+									{% for g in s.curriculargoals %}
+										{% if owner %}										
+											<li><a  onmouseout="this.removeAttribute('href')" onmouseover="this.href=''" onclick="event.preventDefault();openWindow('{{path('edit_curriculargoal')}}/{{g.curriculargoals_id}}');">{{g.description}}</a></li>									 
+										{% else %}	
+											<li>{{g.description}}</li>
+										{% endif %}																				 
+									{% endfor %} 
+									</ul>
+						   {% endfor %} 						   
+					</div>
+
+				</div>
+				<hr/>
+			{% endfor %}
+			<a href="{{path('curricularunits')}}" class="btn btn-outline-warning btn-lg" style="float:right;">{{'Close' | trans}}</a>
+				
+		</div>				
+	
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+
+<script>
+	document.getElementById("show_goals").addEventListener('click', function(event){
+		event.preventDefault();
+		$(".col-xl-6").toggle();
+	});
+</script>
+
+<script>
+
+  function openWindow(window_src)
+  {		
+	window.open(window_src,'_blank',"height=600,width=800,left=100");
+  }
+
+</script>
+
+<script>
+	$("#Div").click(function(){
+	 $("#Div").hide();
+	 $("#Form").show(); 
+	});
+
+	$("#hideForm").click(function(){
+	 $("#Div").show();
+	 $("#Form").hide(); 
+	}); 
+</script>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+									
+
+
+
+
+

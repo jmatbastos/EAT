@@ -1,0 +1,198 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Menu{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/news_responsive.css">
+<style>
+	.transform {
+		background-color: orange;
+		animation-name: transform;
+		animation-duration: 2s;
+		animation-iteration-count: 10;
+	}
+	@keyframes transform {
+		from {background-color: orange;}
+		to {background-color: #ff6600;}
+	}
+	.scale{
+  		animation: 2s linear scale 10;
+	}
+
+	@keyframes scale {
+	to {
+		transform: scale(2);
+	}
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+	<!-- Header -->
+
+	<header class="header">
+	
+
+			
+		<!-- Header Content -->
+		<div class="header_container">
+			<div class="container">
+				{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+					<p style="text-align:right"><small>{{'You are logged in as' | trans}} {{app.user.name}}
+					{% if is_granted('ROLE_ADMIN') %}
+					&nbsp(Administrator)
+					{% endif %}
+					</small></p>
+				{% endif %}	
+				<div class="row">
+					<div class="col">
+						<div class="header_content d-flex flex-row align-items-center justify-content-start">
+							<div class="logo_container">
+								<a href="#">
+									<div class="logo_content d-flex flex-row align-items-end justify-content-start">
+										<div class="logo_img"><img src="{{asset('images')}}/logo.png" alt=""></div>
+										<div class="logo_text">learn</div>
+									</div>
+								</a>
+							</div>
+							<nav class="main_nav_contaner ml-auto">
+								<ul class="main_nav">
+									<li class="active"><a class="nav-link" href="#">{{'Home' | trans}}</a></li>
+									 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+									<li ><a class="nav-link" href="{{path('logout')}}">Logout</a></li>
+									{% else %}
+									<li ><a class="nav-link" href="{{path('login')}}">Login</a></li>									
+									{% endif %}
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	
+	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+	<!-- News -->
+	<div class="news">
+		<div class="container">
+			
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			
+			<div class="row justify-content-center">
+
+						<div class="col-lg-3" >
+							{% if is_granted('ROLE_TEACHER') %}
+							<div style="width: 100%;" class="button button_2"><a style="text-align: center; padding: -10px;" href="{{path('curricularunits') }}">{{'Curricular Units' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>						
+							{% endif %}		
+						</div>
+
+						<div class="col-lg-3" >
+							{% if is_granted('ROLE_TEACHER') %}
+							<div style="width: 100%;" class="button button_2"><a style="text-align: center; padding: -10px;" href="{{path('users') }}">{{'Users' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>						
+							{% endif %}		
+						</div>
+						
+						<div class="col-lg-3" >						
+							{% if is_granted('ROLE_TEACHER') %}
+							<div style="width: 100%;" class="button button_2"><a style="text-align: center; padding: -10px;" href="{{path('statistics') }}">{{'Statistics' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>						
+							{% endif %}	
+						</div> 
+					
+			</div>
+			
+			<br>
+			<br>
+			<br>
+			<br>
+
+			<div class="row justify-content-center">	
+			
+						<div class="col-lg-3" >
+							{% if is_granted('ROLE_TEACHER') %}
+							  <div id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<div style="width: 100%;" class="button button_2"><a style="text-align: center; padding: -10px;" href="#" role="button">{{'Items' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+							  </div>
+							  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								{% if is_granted('ROLE_ADMIN') %}								  
+								<a class="dropdown-item" href="{{path('questions') }}?page=1">{{'All Items' | trans}}</a>
+								{% endif %}									
+								{% for c in curricularunits %}	
+								<a class="dropdown-item" href="{{ path('questions', {'id' : c.curricularunits_id} ) }}?page=1">{{c.name}}</a>
+								{% endfor %}	
+							  </div>
+							{% else %}
+							<div style="width: 100%;" class="button button_2 transform"><a style="text-align: center; padding: -10px;" href="{{path('user_enroll', {'users_id': users_id}) }}" >{{'enroll' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>							
+							{% endif %}
+						</div>
+
+						<div class="col-lg-3" >
+
+							  <div id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<div style="width: 100%;" class="button button_2"><a style="text-align: center; padding: -10px;" href="#" role="button">{{'Exams' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+							  </div>
+							  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								{% if is_granted('ROLE_ADMIN') %}							  
+								<a class="dropdown-item" href="{{path('exams') }}">{{'All Exams' | trans}}</a>
+								{% endif %}								
+								{% for c in curricularunits %}	
+								<a class="dropdown-item" href="{{ path('exams', {'id' : c.curricularunits_id} ) }}">{{c.name}}</a>
+								{% endfor %}	
+							  </div>
+	
+						</div>
+						
+						<div class="col-lg-3" >
+							  <div id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<div style="width: 100%;" class="button button_2"><a style="text-align: center; padding: -10px;" href="#" role="button">{{'Attempts' | trans}}<div class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
+							  </div>
+							  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								{% if is_granted('ROLE_ADMIN') %}							  
+								<a class="dropdown-item" href="{{path('attempts') }}">{{'All Attempts' | trans}}</a>
+								{% endif %}									
+								{% for c in curricularunits %}	
+								<a class="dropdown-item" href="{{ path('attempts', {'id' : c.curricularunits_id} ) }}">{{c.name}}</a>
+								{% endfor %}	
+							  </div>
+
+
+						</div>
+			</div>
+
+
+			<br>
+			<br>
+			<br>
+			<br>
+
+
+		 </div>	
+
+	</div>
+	{% endif %}
+
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+									
+
+
+
+
+

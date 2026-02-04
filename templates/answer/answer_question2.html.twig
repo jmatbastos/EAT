@@ -1,0 +1,276 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Answer question{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/bootstrap4/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/signature-pad.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/main_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Contact -->
+
+	<div class="contact_content">
+	
+		<div class="container">
+
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+						<p><strong>{{'Question' | trans}} {{q.id}}</strong></p>
+						<p><strong>{{'Points' | trans}}:</strong> {{q.marks}}</p>
+						<br>
+							
+						<table border="1" style="width:150px;" cellspacing="0" cellpadding="0">
+							<tr>
+								<th align="center" width="100%" >
+								<span>&nbsp;&nbsp;&nbsp;{{'Time Remaining' | trans}}</span></th>
+							</tr>
+							<tr>
+								<td align="center" width="100%">
+								<span id="time" ></span>
+								</td>
+							</tr>
+						</table>									
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-9">
+						{% if q.type == 6 %}
+							<img class="img-responsive" src="{{asset('uploads/questions')}}/{{q.content}}" alt="">
+						{% endif %}
+						{% if q.type == 5 %}
+							{% autoescape false %}{{q.content}}{% endautoescape %}
+						{% endif %}
+						{% if q.type == 4 %}
+							{% autoescape false %}{{q.content}}{% endautoescape %}
+						{% endif %}
+						
+						<hr>
+						
+						{% if errors > 0 %}
+						   <h2>{{'Validation failed' | trans}}</h2>
+						   <ul>
+						   {% for field, errorMessage in errorMessages %}
+							   <li>{{ errorMessage | trans }}</li>
+						   {% endfor %}
+						   </ul>
+						   <br>
+						{% endif %}
+						
+						<br>
+						
+
+							
+							<div class="form-group">
+								<label for="imageUpload">{{'Answer' | trans}}:</label>
+							</div>									
+
+							
+								<div class="signature-pad">
+									  <canvas id="signature-pad" class="signature-pad--body"></canvas>
+
+										<div class="signature-pad--footer">
+											<button id="draw">{{'Draw' | trans}}</button>
+											<button id="erase">{{'Erase' | trans}}</button>
+											<button id="undo">{{'Undo' | trans}}</button>
+											<button id="clear">{{'Clear' | trans}}</button>
+										</div>
+
+								</div>
+	
+
+							
+							<br>
+							<br>
+
+								{% if show_back is defined %}
+									<button id="save-png-1" class="btn btn-primary">{{'Back' | trans}}</button>
+								{% endif %}
+								{% if show_next is defined %}
+									<button id="save-png-2" class="btn btn-primary">{{'Next' | trans}}</button>
+								{% else %}	
+									<button data-confirm="{{'Are you sure you want to finish the exam' | trans}}?" id="save-png-3" class="btn btn-danger">{{'Submit' | trans}}</button>
+								{% endif %}								
+							
+							<form id="form-id" method="post">			
+								<input type="hidden" name="csrf_token" value="{{ csrf_token('answer') }}">
+								<input type="hidden" id="timer_input" name="timer">								
+								<input id="content" type="hidden" name="content"  value="">
+								<input id="paginate_button" type="hidden" name="paginate_button"  value="">															
+							</form>	
+							
+
+					
+					</div>		
+				</div>
+				<hr/>
+
+		</div>				
+	
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/popper.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/bootstrap.min.js"></script>
+<script src="{{ asset('js') }}/signature_pad.min.js"></script>
+<script src="{{ asset('js') }}/CountDownTimer.js"></script>
+
+<script>
+
+window.onload = function() {
+	  var display = document.querySelector('#time'),
+		timer_input = document.querySelector('#timer_input'),
+		timer = new CountDownTimer( {{timer}} ),
+		timeObj = CountDownTimer.parse( timer );
+
+	  format(timeObj.minutes, timeObj.seconds);
+
+	  timer.onTick(format);
+
+
+	  timer.start();
+
+
+	  function format(minutes, seconds) {
+		//minutes = minutes < 10 ? "0" + minutes : minutes;
+		//seconds = seconds < 10 ? "0" + seconds : seconds;
+		display.textContent = minutes;
+		timer_input.value = minutes*60+seconds;
+	  }
+};
+
+</script>
+
+<script>
+
+window.addEventListener("DOMContentLoaded", function () {
+
+	var canvas = document.getElementById('signature-pad');
+	var form = document.getElementById('form-id');
+	var content = document.getElementById('content');
+	var paginate_button = document.getElementById('paginate_button');
+	
+	// Adjust canvas coordinate space taking into account pixel ratio,
+	// to make it look crisp on mobile devices.
+	// This also causes canvas to be cleared.
+	function resizeCanvas() {
+		// When zoomed out to less than 100%, for some very strange reason,
+		// some browsers report devicePixelRatio as less than 1
+		// and only part of the canvas is cleared then.
+		var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+		canvas.width = canvas.offsetWidth * ratio;
+		canvas.height = canvas.offsetHeight * ratio;
+		canvas.getContext("2d").scale(ratio, ratio);
+	}
+
+	window.onresize = resizeCanvas;
+	resizeCanvas();
+
+	var signaturePad = new SignaturePad(canvas, {
+	  backgroundColor: 'rgb(255, 255, 255)' // necessary for saving image as JPEG; can be removed is only saving as PNG or SVG
+	});
+
+
+	// draw stored image
+
+	{% if q.answer is defined %}
+
+	   var img = '{{q.answer}}' ;
+
+		signaturePad.fromDataURL(img);
+
+		// Returns signature image as an array of point groups
+		const data = signaturePad.toData();
+
+		// Draws signature image from an array of point groups
+		signaturePad.fromData(data);
+
+	{% endif %}
+	
+	
+
+
+
+	document.getElementById('clear').addEventListener('click', function () {
+	  signaturePad.clear();
+	});
+
+	document.getElementById('draw').addEventListener('click', function () {
+	  var ctx = canvas.getContext('2d');
+	  console.log(ctx.globalCompositeOperation);
+	  ctx.globalCompositeOperation = 'source-over'; // default value
+	});
+
+	document.getElementById('erase').addEventListener('click', function () {
+	  var ctx = canvas.getContext('2d');
+	  ctx.globalCompositeOperation = 'destination-out';
+	});
+
+	document.getElementById('undo').addEventListener('click', function () {
+		var data = signaturePad.toData();
+	  if (data) {
+		data.pop(); // remove the last dot or line
+		signaturePad.fromData(data);
+	  }
+	});
+
+
+{% if show_back is defined %}
+	
+	document.getElementById('save-png-1').addEventListener('click', function () {
+		var data = signaturePad.toDataURL('image/png');
+		content.value=data;
+		paginate_button.value="Back";
+		form.submit();
+	});
+	
+{% endif %}
+
+{% if show_next is defined %}
+	document.getElementById('save-png-2').addEventListener('click', function () {
+		  var data = signaturePad.toDataURL('image/png');
+		  content.value=data;
+		  paginate_button.value="Next";
+		  form.submit();		  
+	});
+	
+{% else %}	
+
+	document.getElementById('save-png-3').addEventListener('click', function () {		  
+		  var data = signaturePad.toDataURL('image/png');
+		  content.value=data;
+		  paginate_button.value="Submit";
+		  form.submit();		  
+	});
+	
+{% endif %}
+	
+
+});
+
+</script>
+
+<script>
+$(document).on('click', ':not(form)[data-confirm]', function(e){
+    if(!confirm($(this).data('confirm'))){
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    }
+});
+</script>
+
+{% endblock %}
+
+
+
+

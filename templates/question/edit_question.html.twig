@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Question{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/bootstrap4/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/main_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+
+
+	<!-- Contact -->
+
+
+	<div class="contact_content">
+	
+		{% if errors > 0 %}
+		   <h2>{{'Validation failed' | trans}}</h2>
+		   <ul>
+		   {% for field, errorMessage in errorMessages %}
+			   <li>{{ errorMessage | trans }}</li>
+		   {% endfor %}
+		   </ul>
+		   <br>
+		{% endif %}
+	
+		<div class="container">
+			<form method="post">
+			
+				<input type="hidden" name="csrf_token" value="{{ csrf_token('question') }}">
+				<input type="hidden" name="type" value="{{ question.type }}">			
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+						<p><strong>{{question.id}}</strong></p>
+						<div class="form-group">
+							<label>{{'Curricular Unit' | trans}}</label>
+							<select class="form-control" id="curricularunit" name="curricularunit" >
+								{%for c in curricularunits %}
+									{%if question.name==c.name %}
+									<option selected="true" value="{{c.curricularunits_id}}">{{c.name}}</option>
+									{% endif %}									
+								{% endfor %}
+							</select>
+						</div>
+						<br>
+						
+						<div class="form-group">
+							<label>{{'Chapter Unit' | trans}}</label>
+							<select class="form-control" id="chapter-dropdown" name="chapter">
+							</select>
+						</div>
+						<br>
+						
+						<div class="form-group">
+							<label>{{'Section Unit' | trans}}</label>
+							<select class="form-control" id="section-dropdown" name="section">
+							</select>
+						</div>
+						<br>
+						
+						<div class="form-group" style="visibility: hidden;" id="complexity-dropdown">
+							<label>{{'Question Complexity' | trans}}</label>
+							<select class="form-control" id="complexity" name="complexity" >
+								<option selected="true" disabled>{{'Choose the Question Complexity' | trans}}</option>
+								{%for c in complexities %}
+									<option value="{{c.complexities_id}}">{{c.description | trans}}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<br>
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-9">
+					
+						<div class="form-group">
+							<label for="title">{{'Title' | trans}}</label>
+							<input type="text" name="title" value="{{question.title}}" size="80">	
+						</div>
+						
+						<br>					
+					
+						<div class="form-group">
+								<label for="imageUpload"><strong>{{'Content' | trans}}</strong></label>
+								<textarea id="summernote1" name="content"></textarea>	
+						</div>
+						
+						<br>
+
+
+						<div class="form-group">
+								<label for="imageUpload"><strong>{{'Correct Answer' | trans}}</strong></label>
+								<textarea id="summernote2" name="correct_answer"></textarea>	
+						</div>
+						
+						<br>
+
+					   <div>
+							<p style="float:right;">{{'Before uploading, check out the' | trans}} <a href="#" onmouseover="popUP()">{{'Image upload restrictions' | trans}}</a>.</p>
+					   </div>
+
+						<br>						
+
+					</div>		
+				</div>
+				<div class="row row-xl-eq-height">
+						<div class="col-xl-3"></div>				
+						<div class="col-xl-4"><a href="{{ referer }}" class="btn btn-outline-warning btn-lg" >{{'Cancel' | trans}}</a></div>
+						<div class="col-xl-5"><input id="submit" style="visibility: hidden;" type="submit" class="btn btn-outline-info btn-lg float-right" value="{{'Submit' | trans}}"></div>	
+				</div>		
+			</form>
+		</div>				
+	
+	</div>
+
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script src="{{ asset('js') }}/jquery-3.2.1.min.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/popper.js"></script>
+<script src="{{ asset('styles') }}/bootstrap4/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<script>
+   function popUP() {
+   window.alert("Image upload restrictions: \n\n- allowed image types: gif, jpg, png\n- maximum size: 100kB\n- maximum width: 1024px\n- maximum heigth: 768px");
+   }
+</script>
+
+<script>
+$(document).ready(function() {
+
+	$('textarea').summernote({
+		  fontNames: ['Arial', 'Arial Black', 'Courier New', 'Times New Roman', 'Verdana', 'Helvetica'],
+		  height: 400,                 // set editor height
+		  minHeight: null,             // set minimum height of editor
+		  maxHeight: null,             // set maximum height of editor
+		  focus: true,		  
+		  toolbar: [
+		  ['style', ['style']],
+		  ['font', ['bold', 'underline', 'italic', 'superscript', 'subscript', 'clear']],
+		  ['fontname', ['fontname']],
+		  ['color', ['color']],
+		  ['para', ['ul', 'ol', 'paragraph']],
+		  ['table', ['table']],
+		  ['insert', ['link', 'picture']],
+		  ['view', ['codeview', 'help']],
+		],
+		popover: {
+		  image: [
+			['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+			['float', ['floatLeft', 'floatRight', 'floatNone']],
+			['remove', ['removeMedia']]
+		  ],
+		  link: [
+			['link', ['linkDialogShow', 'unlink']]
+		  ],
+		  table: [
+			['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+			['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+		  ]
+		}
+
+	});
+
+	var HTMLstring = `{% autoescape false %}{{question.content}}{% endautoescape %}`;
+	$('#summernote1').summernote('code', HTMLstring); 
+
+	var HTMLstring2 = `{% autoescape false %}{{question.correct_answer}}{% endautoescape %}`;	
+	$('#summernote2').summernote('code', HTMLstring2);
+});
+
+	$( document ).ready(function() {
+
+		var selection = $( "#curricularunit" ).val();
+		var dropdown = $('#chapter-dropdown');
+
+		dropdown.empty();
+
+		dropdown.append('<option selected="true" disabled>{{'Choose Chapter Unit' | trans}}</option>');
+		dropdown.prop('selectedIndex', 0);
+
+		const url = '{{path('curricularchapters')}}/' + selection;
+
+		// Populate dropdown with list
+			$.getJSON(url, function (data) {
+			$.each(data, function (key, entry) {
+			dropdown.append($('<option></option>').attr('value', entry.curricularchapters_id).text(entry.description));
+		  })
+		});
+	
+	});
+	
+	$('#chapter-dropdown').change(function() {
+
+		var selection = $( "#chapter-dropdown" ).val();
+		var dropdown = $('#section-dropdown');
+
+		dropdown.empty();
+
+		dropdown.append('<option selected="true" disabled>{{'Choose Section Unit' | trans}}</option>');
+		dropdown.prop('selectedIndex', 0);
+
+		const url = '{{path('curricularsections')}}/' + selection;
+
+		// Populate dropdown with list
+			$.getJSON(url, function (data) {
+			$.each(data, function (key, entry) {
+			dropdown.append($('<option></option>').attr('value', entry.curricularsections_id).text(entry.description));
+		  })
+		});
+	
+	});
+	
+	$('#section-dropdown').change(function() {
+		$("#complexity-dropdown").css("visibility", "visible");
+	});
+	
+	$('#complexity-dropdown').change(function() {
+		$("#submit").css("visibility", "visible");
+	});
+</script>
+
+{% endblock %}
+
+
+
+
+									
+
+
+
+
+

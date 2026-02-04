@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Answer Exam{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Header -->
+
+
+	<!-- Contact -->
+
+	<div class="contact_content">
+	
+		<div class="container">
+		
+			<div class="row row-xl-eq-height">
+				<div class="col-xl-3">
+					<p> <strong>{{'Time' | trans}}:</strong> {{exam.resolution_time}} minutes</p>
+					<p> <strong>{{'Total number of questions' | trans}}:</strong> {{exam.exams_questions}}</p>
+					<p> <strong>{{'Total number of points' | trans}}:</strong> {{exam.total_points}}</p>
+				</div>
+				<div class="col-xl-9" style="text-align: center;">
+					<span style="text-align: left;">{% autoescape false %}{{exam.exams_introduction}}{% endautoescape %}</span>
+					<br>				
+					<form method="post">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token('answer') }}">	
+						<a href="" id="close" class="btn btn-outline-warning btn-lg" >{{'Cancel' | trans}}</a>
+						<button type="submit" class="btn btn-outline-primary btn-lg" name="type" value="text">{{'Text Answer' | trans}}</button>
+						<button type="submit" class="btn btn-outline-primary btn-lg" name="type" value="manuscript">{{'Manuscript Answer' | trans}}</button>
+					</form>			
+				</div>
+			</div>
+
+		
+		</div>				
+	
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script>
+	$(function () {
+	  $('#close').click(function () {
+		window.close()
+		return false
+	  })
+	})
+</script>
+{% endblock %}
+
+
+
+
+
+									
+
+
+
+
+

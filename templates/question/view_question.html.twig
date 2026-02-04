@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}View Question{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('styles') }}/contact_responsive.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="super_container">
+
+	<!-- Contact -->
+
+	<div class="contact_content">
+	
+		<div class="container">
+
+				<div class="row row-xl-eq-height">
+					<div class="col-xl-3">
+						<p><strong>{{question.id}}</strong></p>
+						<p><strong>{{'Curricular Unit' | trans}}:</strong> {{question.name}}</p>
+						<p><strong>{{'Chapter' | trans}}:</strong> {{question.cdescription}}</p>
+						<p><strong>{{'Section' | trans}}:</strong> {{question.sdescription}}</p>
+						<p><strong>{{'Difficulty' | trans}}:</strong> {{question.ctydescription | trans}}</p>
+						<p>
+						<a id="close" class="btn btn-outline-info btn-lg" href="">{{'Close' | trans}}</a>											
+						</p>					
+					</div>					
+					<!-- Contact Content -->
+					<div class="col-xl-9">
+						{% if question.type == 6 %}
+							<img class="img-responsive" src="{{asset('uploads/questions')}}/{{question.content}}" alt="">
+						{% endif %}
+						{% if question.type == 5 %}
+							{% autoescape false %}{{question.content}}{% endautoescape %}
+						{% endif %}
+						{% if question.type == 4 %}
+							{% autoescape false %}{{question.content}}{% endautoescape %}
+						{% endif %}
+					</div>		
+				</div>
+
+		</div>				
+	
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script>
+	$(function () {
+	  $('#close').click(function () {
+		window.close()
+		return false
+	  })
+	})
+</script>
+{% endblock %}
+
+
+
+									
+
+
+
+
+
